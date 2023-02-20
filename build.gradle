@@ -27,6 +27,9 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok:1.18.26'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
 
+	// mssql
+	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc:10.2.3.jre17'
+
 	// h2 database
 	implementation 'com.h2database:h2:2.1.214'
 }

@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  database:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    container_name: ms-sql-server-latest
+    environment:
+      ACCEPT_EULA: 1
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: Admin123
+      MSSQL_TELEMETRY_ENABLED: 'FALSE'
+    ports:
+      - 1433:1433
