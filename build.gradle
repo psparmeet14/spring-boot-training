@@ -13,25 +13,26 @@ repositories {
 }
 
 dependencies {
-	// Starter dependencies
+	// BOOT STARTERS
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	// Devtools, Lombok
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-	// Lombok
 	compileOnly 'org.projectlombok:lombok:1.18.26'
 	annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+	// DB
+	implementation 'org.flywaydb:flyway-core:9.14.1'
+	implementation 'org.flywaydb:flyway-sqlserver:9.14.1'
+	//implementation 'com.microsoft.sqlserver:mssql-jdbc:10.2.3.jre17'
+	implementation 'com.h2database:h2:2.1.214'
+
+	// TEST
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompileOnly 'org.projectlombok:lombok:1.18.26'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
-
-	// mssql
-	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc:10.2.3.jre17'
-
-	// h2 database
-	implementation 'com.h2database:h2:2.1.214'
 }
 
 tasks.named('test') {
