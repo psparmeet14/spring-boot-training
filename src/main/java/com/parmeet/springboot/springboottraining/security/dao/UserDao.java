@@ -1,4 +1,4 @@
-package com.parmeet.springboot.springboottraining.configuration.dao;
+package com.parmeet.springboot.springboottraining.security.dao;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

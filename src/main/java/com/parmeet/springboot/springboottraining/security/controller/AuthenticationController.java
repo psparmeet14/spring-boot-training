@@ -1,8 +1,8 @@
-package com.parmeet.springboot.springboottraining.controller;
+package com.parmeet.springboot.springboottraining.security.controller;
 
-import com.parmeet.springboot.springboottraining.configuration.JwtUtils;
-import com.parmeet.springboot.springboottraining.configuration.dao.UserDao;
-import com.parmeet.springboot.springboottraining.dto.AuthenticationRequest;
+import com.parmeet.springboot.springboottraining.security.configuration.JwtUtils;
+import com.parmeet.springboot.springboottraining.security.dao.UserDao;
+import com.parmeet.springboot.springboottraining.security.dto.AuthenticationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

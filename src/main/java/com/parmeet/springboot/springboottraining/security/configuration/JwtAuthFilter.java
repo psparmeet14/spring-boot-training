@@ -1,6 +1,6 @@
-package com.parmeet.springboot.springboottraining.configuration;
+package com.parmeet.springboot.springboottraining.security.configuration;
 
-import com.parmeet.springboot.springboottraining.configuration.dao.UserDao;
+import com.parmeet.springboot.springboottraining.security.dao.UserDao;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

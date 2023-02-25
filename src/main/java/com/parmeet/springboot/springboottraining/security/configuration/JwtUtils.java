@@ -1,4 +1,4 @@
-package com.parmeet.springboot.springboottraining.configuration;
+package com.parmeet.springboot.springboottraining.security.configuration;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package com.parmeet.springboot.springboottraining.configuration;
+package com.parmeet.springboot.springboottraining.course.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

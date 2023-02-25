@@ -1,4 +1,4 @@
-package com.parmeet.springboot.springboottraining.dto;
+package com.parmeet.springboot.springboottraining.security.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
