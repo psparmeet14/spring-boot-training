@@ -1,11 +1,10 @@
 package com.parmeet.springboot.springboottraining.security.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationRequest {
     private String email;
