@@ -1,6 +1,6 @@
 package com.parmeet.springboot.springboottraining.security.controller;
 
-import com.parmeet.springboot.springboottraining.security.configuration.JwtUtils;
+import com.parmeet.springboot.springboottraining.security.configuration.JwtService;
 import com.parmeet.springboot.springboottraining.security.dao.UserDao;
 import com.parmeet.springboot.springboottraining.security.dto.AuthenticationRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +20,14 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final UserDao userDao;
-    private final JwtUtils jwtUtils;
+    private final JwtService jwtService;
 
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         final UserDetails user = userDao.findUserByEmail(request.getEmail());
         if (user != null) {
-            return ResponseEntity.ok(jwtUtils.generateToken(user));
+            return ResponseEntity.ok(jwtService.generateToken(user));
         }
         return ResponseEntity.status(400).body("Some error has occurred");
     }
