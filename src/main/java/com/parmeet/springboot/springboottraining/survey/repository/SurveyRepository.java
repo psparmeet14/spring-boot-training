@@ -6,34 +6,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class SurveyRepository {
 
+    private static final String SELECT_QUERY = "SELECT SURVEY.ID AS SURVEY_ID, SURVEY.TITLE, SURVEY.DESCRIPTION," +
+            " QUESTION.ID AS QUESTION_ID, QUESTION.NAME, QUESTION.OPTIONS, QUESTION.CORRECT_ANSWER" +
+            " FROM SURVEY LEFT JOIN QUESTION ON SURVEY.ID = QUESTION.SURVEY_ID ";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private static List<Survey> surveys = new ArrayList<>();
-
-    static {
-        Question question1 = new Question("Question1", "Most Popular Cloud Platform Today",
-                Arrays.asList("AWS", "Azure", "Google Cloud", "Oracle Cloud"), "AWS");
-        Question question2 = new Question("Question2", "Fastest Growing Cloud Platform",
-                Arrays.asList("AWS", "Azure", "Google Cloud", "Oracle Cloud"), "Google Cloud");
-        Question question3 = new Question("Question3", "Most Popular DevOps Tool",
-                Arrays.asList("Kubernetes", "Docker", "Terraform", "Azure DevOps"), "Kubernetes");
-
-        List<Question> questions = Arrays.asList(question1, question2, question3);
-
-        Survey survey = new Survey("Survey1", "My Favorite Survey", "Description of the Survey", questions);
-
-        surveys.add(survey);
-    }
 
     public List<Survey> retrieveAllSurveys() {
-        return jdbcTemplate.query("SELECT * FROM SURVEY", new SurveyRowMapper());
+        return jdbcTemplate.query(SELECT_QUERY, rs -> {
+            Map<Integer, Survey> surveysById = new HashMap<>();
+            while (rs.next()) {
+                int surveyId = rs.getInt("SURVEY_ID");
+                Survey survey = surveysById.get(surveyId);
+                if (survey == null) {
+                    String title = rs.getString("TITLE");
+                    String description = rs.getString("DESCRIPTION");
+                    survey = new Survey(surveyId, title, description, new ArrayList<>());
+                    surveysById.put(survey.getId(), survey);
+                }
+
+                int questionId = rs.getInt("QUESTION_ID");
+                String name = rs.getString("NAME");
+                if (name != null) {
+                    List<String> options = Arrays.stream(rs.getString("OPTIONS").split(",")).toList();
+                    String correctAnswer = rs.getString("CORRECT_ANSWER");
+                    Question question = new Question(questionId, name, options, correctAnswer, surveyId);
+
+                    survey.getQuestions().add(question);
+                }
+
+            }
+            Collection<Survey> values = surveysById.values();
+            return values.stream().toList();
+        });
     }
 }

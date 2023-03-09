@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Survey {
 
-    private String id;
+    private int id;
     private String title;
     private String description;
     private List<Question> questions;

@@ -15,6 +15,8 @@ public class SurveyService {
 
 
     public List<Survey> retrieveAllSurveys() {
-        return surveyRepository.retrieveAllSurveys();
+        List<Survey> surveys = surveyRepository.retrieveAllSurveys();
+
+        return surveys;
     }
 }
