@@ -12,9 +12,12 @@ public class UserRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public User findByEmail(String email) {
-        return jdbcTemplate.queryForObject("SELECT * FROM _USER WHERE EMAIL = ?",
-                new Object[]{email}, new UserMapper());
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM _USER WHERE EMAIL = ?",
+                new UserMapper(), email));
+    }
 
+    public User save(User user) {
+        return null;
     }
 }

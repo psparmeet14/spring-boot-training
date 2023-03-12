@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
+@Deprecated
 public class UserDao {
 
     private final static List<UserDetails> APPLICATION_USERS = List.of(
