@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 @Repository
@@ -26,25 +28,31 @@ public class SurveyRepository {
                 int surveyId = rs.getInt("SURVEY_ID");
                 Survey survey = surveysById.get(surveyId);
                 if (survey == null) {
-                    String title = rs.getString("TITLE");
-                    String description = rs.getString("DESCRIPTION");
-                    survey = new Survey(surveyId, title, description, new ArrayList<>());
+                    survey = createSurvey(surveyId, rs);
                     surveysById.put(survey.getId(), survey);
                 }
-
                 int questionId = rs.getInt("QUESTION_ID");
-                String name = rs.getString("NAME");
-                if (name != null) {
-                    List<String> options = Arrays.stream(rs.getString("OPTIONS").split(",")).toList();
-                    String correctAnswer = rs.getString("CORRECT_ANSWER");
-                    Question question = new Question(questionId, name, options, correctAnswer, surveyId);
-
+                if (questionId != 0) {
+                    Question question = createQuestion(surveyId, questionId, rs);
                     survey.getQuestions().add(question);
                 }
-
             }
-            Collection<Survey> values = surveysById.values();
-            return values.stream().toList();
+            return surveysById.values().stream().toList();
         });
+    }
+
+    private static Question createQuestion(int surveyId, int questionId, ResultSet rs) throws SQLException {
+        return new Question(questionId,
+                rs.getString("NAME"),
+                Arrays.stream(rs.getString("OPTIONS").split(",")).toList(),
+                rs.getString("CORRECT_ANSWER"),
+                surveyId);
+    }
+
+    private static Survey createSurvey(int surveyId, ResultSet rs) throws SQLException {
+        return new Survey(surveyId,
+                rs.getString("TITLE"),
+                rs.getString("DESCRIPTION"),
+                new ArrayList<>());
     }
 }
