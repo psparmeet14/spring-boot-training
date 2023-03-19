@@ -13,11 +13,13 @@ public class UserRepository {
     private JdbcTemplate jdbcTemplate;
 
     public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM _USER WHERE EMAIL = ?",
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM APP_USER WHERE EMAIL = ?",
                 new UserMapper(), email));
     }
 
     public User save(User user) {
-        return null;
+        jdbcTemplate.update("INSERT INTO APP_USER VALUES(?,?,?,?,?,?)",
+                1, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getRole().name());
+        return user;
     }
 }

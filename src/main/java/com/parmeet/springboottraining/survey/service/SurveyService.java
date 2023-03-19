@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SurveyService {
@@ -16,5 +17,13 @@ public class SurveyService {
 
     public List<Survey> retrieveAllSurveys() {
         return surveyRepository.retrieveAllSurveys();
+    }
+
+    public Survey retrieveSurveyById(int surveyId) {
+        Optional<Survey> optionalSurvey = surveyRepository.retrieveAllSurveys().stream()
+                .filter(survey -> survey.getId() == surveyId)
+                .findFirst();
+
+        return optionalSurvey.orElse(null);
     }
 }
