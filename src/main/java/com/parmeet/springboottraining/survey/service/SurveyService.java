@@ -1,6 +1,7 @@
 package com.parmeet.springboottraining.survey.service;
 
-import com.parmeet.springboottraining.survey.model.Survey;
+import com.parmeet.springboottraining.survey.repository.models.Question;
+import com.parmeet.springboottraining.survey.repository.models.Survey;
 import com.parmeet.springboottraining.survey.repository.SurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,35 @@ public class SurveyService {
         Optional<Survey> optionalSurvey = surveyRepository.retrieveAllSurveys().stream()
                 .filter(survey -> survey.getId() == surveyId)
                 .findFirst();
-
         return optionalSurvey.orElse(null);
+    }
+
+    public List<Question> retrieveAllSurveyQuestions(int surveyId) {
+        var survey = retrieveSurveyById(surveyId);
+        if (survey == null)
+            return null;
+        return survey.getQuestions();
+    }
+
+    public Question retrieveSpecificSurveyQuestion(int surveyId, int questionId) {
+        var questions = retrieveAllSurveyQuestions(surveyId);
+        if (questions == null)
+            return null;
+        return questions.stream()
+                .filter(question -> question.getId() == questionId)
+                .findFirst().orElse(null);
+    }
+
+
+    public int addNewSurveyQuestion(int surveyId, Question question) {
+        return 0;
+    }
+
+    public void deleteSurveyQuestion(int surveyId, int questionId) {
+
+    }
+
+    public void updateSurveyQuestion(int surveyId, int questionId, Question question) {
+
     }
 }

@@ -1,4 +1,4 @@
-package com.parmeet.springboottraining.survey.model;
+package com.parmeet.springboottraining.survey.repository.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

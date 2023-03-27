@@ -1,7 +1,7 @@
 package com.parmeet.springboottraining.survey.repository;
 
-import com.parmeet.springboottraining.survey.model.Question;
-import com.parmeet.springboottraining.survey.model.Survey;
+import com.parmeet.springboottraining.survey.repository.models.Question;
+import com.parmeet.springboottraining.survey.repository.models.Survey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
