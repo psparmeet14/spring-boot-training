@@ -12,13 +12,12 @@ import java.util.*;
 
 @Repository
 public class SurveyRepository {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     private static final String SELECT_QUERY = "SELECT SURVEY.ID AS SURVEY_ID, SURVEY.TITLE, SURVEY.DESCRIPTION," +
             " QUESTION.ID AS QUESTION_ID, QUESTION.NAME, QUESTION.OPTIONS, QUESTION.CORRECT_ANSWER" +
             " FROM SURVEY LEFT JOIN QUESTION ON SURVEY.ID = QUESTION.SURVEY_ID ";
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
 
     public List<Survey> retrieveAllSurveys() {
@@ -26,19 +25,32 @@ public class SurveyRepository {
             Map<Integer, Survey> surveysById = new HashMap<>();
             while (rs.next()) {
                 int surveyId = rs.getInt("SURVEY_ID");
-                Survey survey = surveysById.get(surveyId);
+                var survey = surveysById.get(surveyId);
                 if (survey == null) {
                     survey = createSurvey(surveyId, rs);
                     surveysById.put(survey.getId(), survey);
                 }
-                int questionId = rs.getInt("QUESTION_ID");
+                var questionId = rs.getInt("QUESTION_ID");
                 if (questionId != 0) {
-                    Question question = createQuestion(surveyId, questionId, rs);
+                    var question = createQuestion(surveyId, questionId, rs);
                     survey.getQuestions().add(question);
                 }
             }
             return surveysById.values().stream().toList();
         });
+    }
+
+    public int addNewSurveyQuestion(int surveyId, Question question) {
+        return 0;
+    }
+
+    public void updateSurveyQuestion(int surveyId, int questionId, Question question) {
+
+    }
+
+    public void deleteSurveyQuestion(int surveyId, int questionId) {
+
+
     }
 
     private static Question createQuestion(int surveyId, int questionId, ResultSet rs) throws SQLException {

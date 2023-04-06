@@ -45,14 +45,14 @@ public class SurveyService {
 
 
     public int addNewSurveyQuestion(int surveyId, Question question) {
-        return 0;
-    }
-
-    public void deleteSurveyQuestion(int surveyId, int questionId) {
-
+        return surveyRepository.addNewSurveyQuestion(surveyId, question);
     }
 
     public void updateSurveyQuestion(int surveyId, int questionId, Question question) {
+        surveyRepository.updateSurveyQuestion(surveyId, questionId, question);
+    }
 
+    public void deleteSurveyQuestion(int surveyId, int questionId) {
+        surveyRepository.deleteSurveyQuestion(surveyId, questionId);
     }
 }
