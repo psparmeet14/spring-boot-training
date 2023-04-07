@@ -7,8 +7,10 @@ Includes the following features:
 - Password encryption using BCrypt
 
 For authentication:
+
 POST request: 
 http://localhost:8080/api/v1/auth/register
+
 Request body:
 {
     "firstName": "YourFirstName",
@@ -17,8 +19,11 @@ Request body:
     "password": "YourPassword"
 }
 
-Now, use the token for the subsequent requests to access survey resource
+Now, use the token for the subsequent requests to access survey resource.
+
 To get all surveys:
+
 GET request:
 http://localhost:8080/api/v1/surveys
+
 Add bearer token to the request.
