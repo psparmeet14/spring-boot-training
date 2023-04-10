@@ -12,10 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 public class Question {
     private int id;
+    @JsonIgnore
+    private int surveyId;
     private String name;
     private List<String> options;
     private String correctAnswer;
-
-    @JsonIgnore
-    private int surveyId;
 }

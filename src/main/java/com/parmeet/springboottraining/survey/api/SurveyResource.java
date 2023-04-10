@@ -63,16 +63,16 @@ public class SurveyResource {
         return ResponseEntity.created(location).build();
     }
 
-    @DeleteMapping("/{surveyId}/questions/{questionId}")
-    public ResponseEntity<Object> deleteSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId) {
-        surveyService.deleteSurveyQuestion(surveyId, questionId);
+    @PutMapping("/{surveyId}/questions/{questionId}")
+    public ResponseEntity<Object> updateSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId,
+                                                       @RequestBody Question question) {
+        surveyService.updateSurveyQuestion(surveyId, questionId, question);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{surveyId}/questions/{questionId}")
-    public ResponseEntity<Object> updateSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId,
-            @RequestBody Question question) {
-        surveyService.updateSurveyQuestion(surveyId, questionId, question);
+    @DeleteMapping("/{surveyId}/questions/{questionId}")
+    public ResponseEntity<Object> deleteSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId) {
+        surveyService.deleteSurveyQuestion(surveyId, questionId);
         return ResponseEntity.noContent().build();
     }
 }

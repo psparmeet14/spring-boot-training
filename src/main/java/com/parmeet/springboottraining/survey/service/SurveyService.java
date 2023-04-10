@@ -1,20 +1,19 @@
 package com.parmeet.springboottraining.survey.service;
 
+import com.parmeet.springboottraining.survey.repository.SurveyRepository;
 import com.parmeet.springboottraining.survey.repository.models.Question;
 import com.parmeet.springboottraining.survey.repository.models.Survey;
-import com.parmeet.springboottraining.survey.repository.SurveyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SurveyService {
 
-    @Autowired
-    private SurveyRepository surveyRepository;
-
+    private final SurveyRepository surveyRepository;
 
     public List<Survey> retrieveAllSurveys() {
         return surveyRepository.retrieveAllSurveys();
@@ -45,6 +44,7 @@ public class SurveyService {
 
 
     public int addNewSurveyQuestion(int surveyId, Question question) {
+        question.setId(7);
         return surveyRepository.addNewSurveyQuestion(surveyId, question);
     }
 
