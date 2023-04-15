@@ -1,8 +1,9 @@
 package com.parmeet.springboottraining.survey.service;
 
+import com.parmeet.springboottraining.survey.api.mappers.SurveyMapper;
+import com.parmeet.springboottraining.survey.api.models.SurveyDTO;
 import com.parmeet.springboottraining.survey.repository.SurveyRepository;
 import com.parmeet.springboottraining.survey.repository.models.Question;
-import com.parmeet.springboottraining.survey.repository.models.Survey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,16 @@ public class SurveyService {
 
     private final SurveyRepository surveyRepository;
 
-    public List<Survey> retrieveAllSurveys() {
-        return surveyRepository.retrieveAllSurveys();
+    public List<SurveyDTO> retrieveAllSurveys() {
+        return surveyRepository.retrieveAllSurveys().stream()
+                .map(SurveyMapper::mapToDTO)
+                .toList();
     }
 
-    public Survey retrieveSurveyById(int surveyId) {
-        Optional<Survey> optionalSurvey = surveyRepository.retrieveAllSurveys().stream()
+    public SurveyDTO retrieveSurveyById(int surveyId) {
+        Optional<SurveyDTO> optionalSurvey = surveyRepository.retrieveAllSurveys().stream()
                 .filter(survey -> survey.getId() == surveyId)
+                .map(SurveyMapper::mapToDTO)
                 .findFirst();
         return optionalSurvey.orElse(null);
     }
@@ -30,7 +34,7 @@ public class SurveyService {
         var survey = retrieveSurveyById(surveyId);
         if (survey == null)
             return null;
-        return survey.getQuestions();
+        return survey.questions();
     }
 
     public Question retrieveSpecificSurveyQuestion(int surveyId, int questionId) {
@@ -44,7 +48,7 @@ public class SurveyService {
 
 
     public int addNewSurveyQuestion(int surveyId, Question question) {
-        question.setId(7);
+        //question.setId(7);
         return surveyRepository.addNewSurveyQuestion(surveyId, question);
     }
 

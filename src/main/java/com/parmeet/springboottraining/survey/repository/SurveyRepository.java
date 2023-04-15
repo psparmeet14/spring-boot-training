@@ -55,14 +55,12 @@ public class SurveyRepository {
     public int addNewSurveyQuestion(int surveyId, Question question) {
         var sql = """
                 INSERT INTO QUESTION (
-                    ID,
                     SURVEY_ID,
                     NAME,
                     OPTIONS,
                     CORRECT_ANSWER
                 )
                 VALUES (
-                    :id,
                     :surveyId,
                     :name,
                     :options,
@@ -70,7 +68,6 @@ public class SurveyRepository {
                 );
                 """;
         jdbc.update(sql, Map.ofEntries(
-                Map.entry("id", question.getId()),
                 Map.entry("surveyId", surveyId),
                 Map.entry("name", question.getName()),
                 Map.entry("options", String.join(",", question.getOptions())),

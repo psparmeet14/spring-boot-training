@@ -1,7 +1,7 @@
 package com.parmeet.springboottraining.survey.api;
 
+import com.parmeet.springboottraining.survey.api.models.SurveyDTO;
 import com.parmeet.springboottraining.survey.repository.models.Question;
-import com.parmeet.springboottraining.survey.repository.models.Survey;
 import com.parmeet.springboottraining.survey.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,13 +25,13 @@ public class SurveyResource {
     }
 
     @GetMapping("")
-    public List<Survey> retrieveAllSurveys() {
+    public List<SurveyDTO> retrieveAllSurveys() {
         return surveyService.retrieveAllSurveys();
     }
 
     @GetMapping("/{surveyId}")
-    public Survey retrieveSurveyById(@PathVariable int surveyId) {
-        Survey survey = surveyService.retrieveSurveyById(surveyId);
+    public SurveyDTO retrieveSurveyById(@PathVariable int surveyId) {
+        SurveyDTO survey = surveyService.retrieveSurveyById(surveyId);
         if (survey == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return survey;
