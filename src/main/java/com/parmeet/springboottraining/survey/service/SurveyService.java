@@ -1,9 +1,10 @@
 package com.parmeet.springboottraining.survey.service;
 
+import com.parmeet.springboottraining.survey.api.mappers.QuestionMapper;
 import com.parmeet.springboottraining.survey.api.mappers.SurveyMapper;
+import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
 import com.parmeet.springboottraining.survey.api.models.SurveyDTO;
 import com.parmeet.springboottraining.survey.repository.SurveyRepository;
-import com.parmeet.springboottraining.survey.repository.models.Question;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,29 +31,32 @@ public class SurveyService {
         return optionalSurvey.orElse(null);
     }
 
-    public List<Question> retrieveAllSurveyQuestions(int surveyId) {
+    public List<QuestionDTO> retrieveAllSurveyQuestions(int surveyId) {
         var survey = retrieveSurveyById(surveyId);
         if (survey == null)
             return null;
         return survey.questions();
     }
 
-    public Question retrieveSpecificSurveyQuestion(int surveyId, int questionId) {
+    public QuestionDTO retrieveSpecificSurveyQuestion(int surveyId, int questionId) {
         var questions = retrieveAllSurveyQuestions(surveyId);
         if (questions == null)
             return null;
         return questions.stream()
-                .filter(question -> question.getId() == questionId)
+                .filter(question -> question.id() == questionId)
                 .findFirst().orElse(null);
     }
 
 
-    public int addNewSurveyQuestion(int surveyId, Question question) {
-        //question.setId(7);
+    public int addNewSurveyQuestion(int surveyId, QuestionDTO questionDTO) {
+        var question = QuestionMapper.mapFromDTO(questionDTO);
+        question.setSurveyId(surveyId);
         return surveyRepository.addNewSurveyQuestion(surveyId, question);
     }
 
-    public void updateSurveyQuestion(int surveyId, int questionId, Question question) {
+    public void updateSurveyQuestion(int surveyId, int questionId, QuestionDTO questionDTO) {
+        var question = QuestionMapper.mapFromDTO(questionDTO);
+        question.setSurveyId(surveyId);
         surveyRepository.updateSurveyQuestion(surveyId, questionId, question);
     }
 

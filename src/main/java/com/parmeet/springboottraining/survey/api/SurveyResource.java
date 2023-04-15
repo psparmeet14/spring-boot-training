@@ -1,7 +1,7 @@
 package com.parmeet.springboottraining.survey.api;
 
+import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
 import com.parmeet.springboottraining.survey.api.models.SurveyDTO;
-import com.parmeet.springboottraining.survey.repository.models.Question;
 import com.parmeet.springboottraining.survey.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,7 +38,7 @@ public class SurveyResource {
     }
 
     @GetMapping("/{surveyId}/questions")
-    public List<Question> retrieveAllSurveyQuestions(@PathVariable int surveyId) {
+    public List<QuestionDTO> retrieveAllSurveyQuestions(@PathVariable int surveyId) {
         var questions = surveyService.retrieveAllSurveyQuestions(surveyId);
         if (questions == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -46,7 +46,7 @@ public class SurveyResource {
     }
 
     @GetMapping("/{surveyId}/questions/{questionId}")
-    public Question retrieveSpecificSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId) {
+    public QuestionDTO retrieveSpecificSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId) {
         var question = surveyService.retrieveSpecificSurveyQuestion(surveyId, questionId);
         if (question == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -54,7 +54,7 @@ public class SurveyResource {
     }
 
     @PostMapping("/{surveyId}/questions")
-    public ResponseEntity<Object> addNewSurveyQuestion(@PathVariable int surveyId, @RequestBody Question question) {
+    public ResponseEntity<Object> addNewSurveyQuestion(@PathVariable int surveyId, @RequestBody QuestionDTO question) {
         var questionId = surveyService.addNewSurveyQuestion(surveyId, question);
         var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{questionId}")
@@ -65,7 +65,7 @@ public class SurveyResource {
 
     @PutMapping("/{surveyId}/questions/{questionId}")
     public ResponseEntity<Object> updateSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId,
-                                                       @RequestBody Question question) {
+                                                       @RequestBody QuestionDTO question) {
         surveyService.updateSurveyQuestion(surveyId, questionId, question);
         return ResponseEntity.noContent().build();
     }

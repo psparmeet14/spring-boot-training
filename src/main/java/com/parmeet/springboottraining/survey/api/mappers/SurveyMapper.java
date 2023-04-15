@@ -9,7 +9,7 @@ public class SurveyMapper {
                 survey.getId(),
                 survey.getTitle(),
                 survey.getDescription(),
-                survey.getQuestions()
+                survey.getQuestions().stream().map(QuestionMapper::mapToDTO).toList()
         );
     }
 }
