@@ -3,7 +3,9 @@ package com.parmeet.springboottraining.survey.repository;
 import com.parmeet.springboottraining.survey.repository.models.Question;
 import com.parmeet.springboottraining.survey.repository.models.Survey;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -53,6 +55,7 @@ public class SurveyRepository {
     }
 
     public int addNewSurveyQuestion(int surveyId, Question question) {
+        var keyHolder = new GeneratedKeyHolder();
         var sql = """
                 INSERT INTO QUESTION (
                     SURVEY_ID,
@@ -67,13 +70,15 @@ public class SurveyRepository {
                     :correctAnswer
                 );
                 """;
-        jdbc.update(sql, Map.ofEntries(
-                Map.entry("surveyId", surveyId),
-                Map.entry("name", question.getName()),
-                Map.entry("options", String.join(",", question.getOptions())),
-                Map.entry("correctAnswer", question.getCorrectAnswer())
-        ));
-        return question.getId();
+
+        var params = new MapSqlParameterSource()
+                .addValue("surveyId", surveyId)
+                .addValue("name", question.getName())
+                .addValue("options", String.join(",", question.getOptions()))
+                .addValue("correctAnswer", question.getCorrectAnswer());
+
+        jdbc.update(sql, params, keyHolder);
+        return keyHolder.getKey() != null ? (int) keyHolder.getKey() : 0;
     }
 
     public void updateSurveyQuestion(int surveyId, int questionId, Question question) {
