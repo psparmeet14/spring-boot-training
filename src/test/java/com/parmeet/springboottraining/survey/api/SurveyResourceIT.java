@@ -1,6 +1,8 @@
 package com.parmeet.springboottraining.survey.api;
 
+import com.parmeet.springboottraining.security.dto.AuthenticationResponse;
 import org.json.JSONException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,23 +23,38 @@ class SurveyResourceIT {
     @Autowired
     private TestRestTemplate template;
 
+    private static String token;
+
     private static final String ALL_SURVEYS_URL = "/api/v1/surveys";
     private static final String SPECIFIC_SURVEY_URL = "/api/v1/surveys/2";
-    private static final String ALL_SURVEY_QUESTIONS_URL = "/api/v1/surveys/2/questions";
+    private static final String GENERIC_QUESTIONS_URL = "/api/v1/surveys/2/questions";
     private static final String SPECIFIC_QUESTION_URL = "/api/v1/surveys/2/questions/5";
 
-    @Test
-    void retrieveAllSurveys_basicScenario() {
-        // TODO
-    }
+    @BeforeAll
+    static void authorizationSetup(@Autowired TestRestTemplate template) {
+        var requestBody = """
+                {
+                    "firstName": "Parmeet",
+                    "lastName": "Singh",
+                    "email": "test123@gmail.com",
+                    "password": "password"
+                }
+                """;
 
-    @Test
-    void retrieveSurveyById_basicScenario() {
-        // TODO
+        var headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        var httpEntity = new HttpEntity<>(requestBody, headers);
+        var responseEntity = template.exchange("/api/v1/auth/register", HttpMethod.POST, httpEntity, AuthenticationResponse.class);
+        token = Objects.requireNonNull(responseEntity.getBody()).getToken();
     }
 
     @Test
     void retrieveAllSurveyQuestions_basicScenario() throws JSONException {
+        var httpEntity = new HttpEntity<>(null, createHttpContentTypeAndAuthorizationHeaders());
+
+        var responseEntity = template.exchange(GENERIC_QUESTIONS_URL, HttpMethod.GET, httpEntity, String.class);
+        // var responseEntity = template.getForEntity(GENERIC_QUESTIONS_URL, String.class);
+
         var expectedResponse = """
                 [
                     {
@@ -53,7 +72,6 @@ class SurveyResourceIT {
                 ]      
                 """;
 
-        var responseEntity = template.getForEntity(ALL_SURVEY_QUESTIONS_URL, String.class);
 
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         assertEquals("application/json", responseEntity.getHeaders().get("Content-Type").get(0));
@@ -62,6 +80,11 @@ class SurveyResourceIT {
 
     @Test
     void retrieveSpecificSurveyQuestion_basicScenario() throws JSONException {
+        var httpEntity = new HttpEntity<>(null, createHttpContentTypeAndAuthorizationHeaders());
+
+        var responseEntity = template.exchange(SPECIFIC_QUESTION_URL, HttpMethod.GET, httpEntity, String.class);
+        // var responseEntity = template.getForEntity(SPECIFIC_QUESTION_URL, String.class);
+
         var expectedResponse = """
                 {
                     "id":5,
@@ -70,8 +93,6 @@ class SurveyResourceIT {
                     "correctAnswer":"Python"
                 }
                 """;
-
-        var responseEntity = template.getForEntity(SPECIFIC_QUESTION_URL, String.class);
 
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
         assertEquals("application/json", responseEntity.getHeaders().get("Content-Type").get(0));
@@ -92,16 +113,33 @@ class SurveyResourceIT {
                     "correctAnswer": "Java"
                 }
                 """;
-        var headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        var httpEntity = new HttpEntity<>(requestBody, headers);
+        var httpEntity = new HttpEntity<>(requestBody, createHttpContentTypeAndAuthorizationHeaders());
 
-        var responseEntity = template.exchange(ALL_SURVEY_QUESTIONS_URL, HttpMethod.POST, httpEntity, String.class);
+        var responseEntity = template.exchange(GENERIC_QUESTIONS_URL, HttpMethod.POST, httpEntity, String.class);
 
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
-        var locationHeader = responseEntity.getHeaders().get("Location").get(0);
-        assertTrue(locationHeader.contains(ALL_SURVEY_QUESTIONS_URL));
-        template.delete(locationHeader);
+        var locationHeader = Objects.requireNonNull(responseEntity.getHeaders().get("Location")).get(0);
+        assertTrue(locationHeader.contains("/api/v1/surveys/2/questions/"));
+
+        var responseEntityDelete = template.exchange(locationHeader, HttpMethod.DELETE, httpEntity, String.class);
+        assertTrue(responseEntityDelete.getStatusCode().is2xxSuccessful());
     }
 
+    private HttpHeaders createHttpContentTypeAndAuthorizationHeaders() {
+        var headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        headers.add("Authorization", "Bearer " + token);
+        return headers;
+    }
+
+
+    @Test
+    void retrieveAllSurveys_basicScenario() {
+        // TODO
+    }
+
+    @Test
+    void retrieveSurveyById_basicScenario() {
+        // TODO
+    }
 }

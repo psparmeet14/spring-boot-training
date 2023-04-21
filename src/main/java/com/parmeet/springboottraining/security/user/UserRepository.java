@@ -18,8 +18,8 @@ public class UserRepository {
     }
 
     public User save(User user) {
-        jdbcTemplate.update("INSERT INTO APP_USER VALUES(?,?,?,?,?,?)",
-                1, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getRole().name());
+        jdbcTemplate.update("INSERT INTO APP_USER (FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, ROLE) VALUES(?,?,?,?,?)",
+                user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getRole().name());
         return user;
     }
 }
