@@ -3,7 +3,7 @@ package com.parmeet.springboottraining.survey.api.models;
 import java.util.List;
 
 public record SurveyDTO(
-        int id,
+        Integer id,
         String title,
         String description,
         List<QuestionDTO> questions
