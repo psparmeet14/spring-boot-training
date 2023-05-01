@@ -1,4 +1,4 @@
-package com.parmeet.springboottraining.survey.api.mappers;
+package com.parmeet.springboottraining.survey.service.mappers;
 
 import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
 import com.parmeet.springboottraining.survey.repository.models.Question;

@@ -1,10 +1,10 @@
 package com.parmeet.springboottraining.survey.service;
 
-import com.parmeet.springboottraining.survey.api.mappers.QuestionMapper;
-import com.parmeet.springboottraining.survey.api.mappers.SurveyMapper;
 import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
 import com.parmeet.springboottraining.survey.api.models.SurveyDTO;
 import com.parmeet.springboottraining.survey.repository.SurveyRepository;
+import com.parmeet.springboottraining.survey.service.mappers.QuestionMapper;
+import com.parmeet.springboottraining.survey.service.mappers.SurveyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
