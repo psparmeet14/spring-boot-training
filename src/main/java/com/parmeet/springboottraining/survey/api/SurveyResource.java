@@ -1,5 +1,6 @@
 package com.parmeet.springboottraining.survey.api;
 
+import com.parmeet.springboottraining.exception.NoSuchElementFoundException;
 import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
 import com.parmeet.springboottraining.survey.api.models.SurveyDTO;
 import com.parmeet.springboottraining.survey.service.SurveyService;
@@ -33,7 +34,7 @@ public class SurveyResource {
     public SurveyDTO retrieveSurveyById(@PathVariable int surveyId) {
         SurveyDTO survey = surveyService.retrieveSurveyById(surveyId);
         if (survey == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new NoSuchElementFoundException("Survey not found with id: " + surveyId);
         return survey;
     }
 
@@ -64,8 +65,9 @@ public class SurveyResource {
     }
 
     @PutMapping("/{surveyId}/questions/{questionId}")
-    public ResponseEntity<Object> updateSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId,
-                                                       @RequestBody QuestionDTO question) {
+    public ResponseEntity<Object> updateSurveyQuestion(
+            @PathVariable int surveyId, @PathVariable int questionId,
+            @RequestBody QuestionDTO question) {
         surveyService.updateSurveyQuestion(surveyId, questionId, question);
         return ResponseEntity.noContent().build();
     }
