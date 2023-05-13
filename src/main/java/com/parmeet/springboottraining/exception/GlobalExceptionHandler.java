@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import static java.util.Objects.nonNull;
@@ -65,6 +66,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errorResponse.addValidationError(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return ResponseEntity.unprocessableEntity().body(errorResponse);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return buildErrorResponse(ex, "Invalid resource path", HttpStatus.valueOf(status.value()), request);
     }
 
     @Override
