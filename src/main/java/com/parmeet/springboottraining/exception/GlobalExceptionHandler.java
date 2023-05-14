@@ -1,5 +1,6 @@
 package com.parmeet.springboottraining.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,27 +36,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(exception, exception.getMessage(), HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
+        return new ResponseEntity<>("Not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> handleAllUncaughtException(Exception exception, WebRequest request) {
         log.error("Unknown error occurred", exception);
         return buildErrorResponse(exception, "Unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, request);
-    }
-
-    private ResponseEntity<Object> buildErrorResponse(Exception exception, String message, HttpStatus httpStatus, WebRequest request) {
-        var errorResponse = new ErrorResponse(httpStatus.value(), message);
-        if (isTraceOn(request)) {
-            errorResponse.setStackTrace(ExceptionUtils.getStackTrace(exception));
-        }
-        return ResponseEntity.status(httpStatus).body(errorResponse);
-    }
-
-    private boolean isTraceOn(WebRequest request) {
-        String[] value = request.getParameterValues(TRACE);
-        return nonNull(value)
-                && value.length > 0
-                && value[0].contentEquals("true");
     }
 
     @Override
@@ -76,5 +68,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         return buildErrorResponse(ex, "Unknown error occurred", HttpStatus.valueOf(statusCode.value()), request);
+    }
+
+    private ResponseEntity<Object> buildErrorResponse(Exception exception, String message, HttpStatus httpStatus, WebRequest request) {
+        var errorResponse = new ErrorResponse(httpStatus.value(), message);
+        if (isTraceOn(request)) {
+            errorResponse.setStackTrace(ExceptionUtils.getStackTrace(exception));
+        }
+        return ResponseEntity.status(httpStatus).body(errorResponse);
+    }
+
+    private boolean isTraceOn(WebRequest request) {
+        String[] value = request.getParameterValues(TRACE);
+        return nonNull(value)
+                && value.length > 0
+                && value[0].contentEquals("true");
     }
 }

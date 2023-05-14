@@ -16,11 +16,11 @@ public class QuestionMapper {
 
     public static Question mapFromDTO(QuestionDTO questionDTO) {
         return new Question(
-                questionDTO.id(),
+                questionDTO.getId(),
                 0,
-                questionDTO.name(),
-                questionDTO.options(),
-                questionDTO.correctAnswer()
+                questionDTO.getName(),
+                questionDTO.getOptions(),
+                questionDTO.getCorrectAnswer()
         );
     }
 }

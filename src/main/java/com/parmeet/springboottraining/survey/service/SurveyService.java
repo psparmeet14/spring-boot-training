@@ -35,7 +35,7 @@ public class SurveyService {
         var survey = retrieveSurveyById(surveyId);
         if (survey == null)
             return null;
-        return survey.questions();
+        return survey.getQuestions();
     }
 
     public QuestionDTO retrieveSpecificSurveyQuestion(int surveyId, int questionId) {
@@ -43,7 +43,7 @@ public class SurveyService {
         if (questions == null)
             return null;
         return questions.stream()
-                .filter(question -> question.id() == questionId)
+                .filter(question -> question.getId() == questionId)
                 .findFirst().orElse(null);
     }
 
