@@ -1,5 +1,6 @@
 package com.parmeet.springboottraining.exception;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -39,7 +40,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
-        return new ResponseEntity<>("Not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        var errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Not valid due to validation error");
+        for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+            errorResponse.addValidationError(violation.getPropertyPath().toString(), violation.getMessage());
+        }
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
 
