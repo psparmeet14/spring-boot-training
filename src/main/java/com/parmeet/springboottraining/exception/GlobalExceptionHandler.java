@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import static java.util.Objects.nonNull;
 
 @Slf4j(topic = "GLOBAL_EXCEPTION_HANDLER")
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.parmeet.springboottraining.survey")
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     public static final String TRACE = "trace";
