@@ -10,8 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class SurveyDTO {
-    private Integer i;
-
+    private Integer id;
     @NotBlank
     private String title;
     @NotBlank

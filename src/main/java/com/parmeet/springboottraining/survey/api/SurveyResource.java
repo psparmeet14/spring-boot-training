@@ -5,6 +5,14 @@ import com.parmeet.springboottraining.security.user.User;
 import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
 import com.parmeet.springboottraining.survey.api.models.SurveyDTO;
 import com.parmeet.springboottraining.survey.service.SurveyService;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -21,15 +29,25 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.security.Principal;
 import java.util.List;
 
+@Tag(
+        name = "Survey controller",
+        description = "Controller for handling data between Survey UI and user uploaded surveys.",
+        externalDocs = @ExternalDocumentation(
+                url = "https://www.google.com",
+                description = "Google"
+        )
+)
 @RestController
 @RequestMapping("/api/v1/surveys")
 @RequiredArgsConstructor
 @Validated
+@SecurityRequirement(name = "bearerAuth")
 public class SurveyResource {
 
     private final SurveyService surveyService;
 
     @GetMapping("/hello")
+    @Hidden
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("Hello from our API");
     }
@@ -43,6 +61,49 @@ public class SurveyResource {
         return surveyService.retrieveAllSurveys();
     }
 
+    @Operation(
+            summary = "This is summary for retrieve survey by id end point",
+            description = "Get endpoint to Retrieve survey by id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Survey retrieved successfully"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Survey not found"
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Unauthorized / Invalid Token",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Invalid Token",
+                                                    value = "{\n" +
+                                                            "  \"timestamp\": \"2021-08-17T12:47:50.000+00:00\",\n" +
+                                                            "  \"status\": 403,\n" +
+                                                            "  \"error\": \"Forbidden\",\n" +
+                                                            "  \"message\": \"Access Denied\",\n" +
+                                                            "  \"path\": \"/api/v1/surveys/1\"\n" +
+                                                            "}"
+                                            )
+                                    }
+                            )
+                    )
+            },
+            security = {
+                    @SecurityRequirement(name = "bearerAuth")
+            },
+            tags = {
+                    "Survey controller"
+            },
+            externalDocs = @ExternalDocumentation(
+                    url = "https://www.google.com",
+                    description = "Google"
+            )
+    )
     @GetMapping("/{surveyId}")
     public SurveyDTO retrieveSurveyById(@PathVariable @Min(1) int surveyId, Principal principal) {
         System.out.println("User principal: " + principal);

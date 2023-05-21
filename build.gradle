@@ -32,6 +32,8 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.apache.commons:commons-lang3'
 
+    // Spring boot 3 and swagger ui
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
     // DB
     implementation 'org.flywaydb:flyway-core:9.14.1'

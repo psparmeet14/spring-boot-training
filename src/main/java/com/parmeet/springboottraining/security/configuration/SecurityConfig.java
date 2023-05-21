@@ -30,7 +30,12 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/*/auth/*")
+                .requestMatchers(
+                        "/api/*/auth/*",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html")
                 .permitAll()
                 .requestMatchers(PathRequest.toH2Console())
                 .permitAll()
