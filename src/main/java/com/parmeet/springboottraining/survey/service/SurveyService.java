@@ -18,33 +18,33 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
 
     public List<SurveyDTO> retrieveAllSurveys() {
-        return surveyRepository.retrieveAllSurveys().stream()
+        return surveyRepository.retrieveAllSurveys()
+                .orElse(List.of())
+                .stream()
                 .map(SurveyMapper::mapToDTO)
                 .toList();
     }
 
-    public SurveyDTO retrieveSurveyById(int surveyId) {
-        Optional<SurveyDTO> optionalSurvey = surveyRepository.retrieveAllSurveys().stream()
+    public Optional<SurveyDTO> retrieveSurveyById(int surveyId) {
+        return surveyRepository.retrieveAllSurveys()
+                .orElse(List.of())
+                .stream()
                 .filter(survey -> survey.getId() == surveyId)
                 .map(SurveyMapper::mapToDTO)
                 .findFirst();
-        return optionalSurvey.orElse(null);
     }
 
-    public List<QuestionDTO> retrieveAllSurveyQuestions(int surveyId) {
+    public Optional<List<QuestionDTO>> retrieveAllSurveyQuestions(int surveyId) {
         var survey = retrieveSurveyById(surveyId);
-        if (survey == null)
-            return null;
-        return survey.getQuestions();
+        return survey.map(SurveyDTO::getQuestions);
     }
 
-    public QuestionDTO retrieveSpecificSurveyQuestion(int surveyId, int questionId) {
-        var questions = retrieveAllSurveyQuestions(surveyId);
-        if (questions == null)
-            return null;
-        return questions.stream()
+    public Optional<QuestionDTO> retrieveSpecificSurveyQuestion(int surveyId, int questionId) {
+        return retrieveAllSurveyQuestions(surveyId)
+                .orElse(List.of())
+                .stream()
                 .filter(question -> question.getId() == questionId)
-                .findFirst().orElse(null);
+                .findFirst();
     }
 
 

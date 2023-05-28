@@ -10,10 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,7 +18,7 @@ public class SurveyRepository {
 
     private final NamedParameterJdbcOperations jdbc;
 
-    public List<Survey> retrieveAllSurveys() {
+    public Optional<List<Survey>> retrieveAllSurveys() {
         var sql = """
                 SELECT
                     SURVEY.ID AS SURVEY_ID,
@@ -35,23 +32,25 @@ public class SurveyRepository {
                 LEFT JOIN QUESTION ON SURVEY.ID = QUESTION.SURVEY_ID;
                 """;
 
-        return jdbc.query(sql, rs -> {
-            Map<Integer, Survey> surveysById = new HashMap<>();
-            while (rs.next()) {
-                var surveyId = rs.getInt("SURVEY_ID");
-                var survey = surveysById.get(surveyId);
-                if (survey == null) {
-                    survey = createSurvey(surveyId, rs);
-                    surveysById.put(survey.getId(), survey);
-                }
-                var questionId = rs.getInt("QUESTION_ID");
-                if (questionId != 0) {
-                    var question = createQuestion(surveyId, questionId, rs);
-                    survey.getQuestions().add(question);
-                }
-            }
-            return surveysById.values().stream().toList();
-        });
+        return Optional.ofNullable(
+                jdbc.query(sql, rs -> {
+                    Map<Integer, Survey> surveysById = new HashMap<>();
+                    while (rs.next()) {
+                        var surveyId = rs.getInt("SURVEY_ID");
+                        var survey = surveysById.get(surveyId);
+                        if (survey == null) {
+                            survey = createSurvey(surveyId, rs);
+                            surveysById.put(survey.getId(), survey);
+                        }
+                        var questionId = rs.getInt("QUESTION_ID");
+                        if (questionId != 0) {
+                            var question = createQuestion(surveyId, questionId, rs);
+                            survey.getQuestions().add(question);
+                        }
+                    }
+                    return surveysById.values().stream().toList();
+                })
+        );
     }
 
     public int addNewSurveyQuestion(int surveyId, Question question) {
@@ -83,19 +82,20 @@ public class SurveyRepository {
 
     public void updateSurveyQuestion(int surveyId, int questionId, Question question) {
         var sql = """
-                UPDATE QUESTION SET
-                    NAME = :name,
+                UPDATE QUESTION 
+                SET NAME = :name,
                     OPTIONS = :options,
                     CORRECT_ANSWER = :correctAnswer
                 WHERE ID = :id AND SURVEY_ID = :surveyId;     
                 """;
         jdbc.update(sql, Map.ofEntries(
-                Map.entry("id", questionId),
-                Map.entry("surveyId", surveyId),
-                Map.entry("name", question.getName()),
-                Map.entry("options", String.join(",", question.getOptions())),
-                Map.entry("correctAnswer", question.getCorrectAnswer())
-        ));
+                        Map.entry("id", questionId),
+                        Map.entry("surveyId", surveyId),
+                        Map.entry("name", question.getName()),
+                        Map.entry("options", String.join(",", question.getOptions())),
+                        Map.entry("correctAnswer", question.getCorrectAnswer())
+                )
+        );
     }
 
     public void deleteSurveyQuestion(int surveyId, int questionId) {

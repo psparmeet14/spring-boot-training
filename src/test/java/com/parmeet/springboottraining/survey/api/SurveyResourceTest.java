@@ -2,6 +2,7 @@ package com.parmeet.springboottraining.survey.api;
 
 import com.parmeet.springboottraining.security.configuration.JwtAuthFilter;
 import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
+import com.parmeet.springboottraining.survey.api.web.v1.SurveyResource;
 import com.parmeet.springboottraining.survey.service.SurveyService;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,7 +64,7 @@ class SurveyResourceTest {
                 Arrays.asList("Java", "GoLang", "Python", "JavaScript"),
                 "Python"
         );
-        when(surveyService.retrieveSpecificSurveyQuestion(2, 5)).thenReturn(questionDTO);
+        when(surveyService.retrieveSpecificSurveyQuestion(2, 5)).thenReturn(Optional.of(questionDTO));
 
         var requestBuilder = MockMvcRequestBuilders.get(SPECIFIC_QUESTION_URL).accept(MediaType.APPLICATION_JSON);
         var mvcResult = mockMvc.perform(requestBuilder).andReturn();

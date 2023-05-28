@@ -1,4 +1,4 @@
-package com.parmeet.springboottraining.survey.api;
+package com.parmeet.springboottraining.survey.api.web.v1;
 
 import com.parmeet.springboottraining.exception.NoSuchElementFoundException;
 import com.parmeet.springboottraining.security.user.User;
@@ -34,11 +34,11 @@ import java.util.List;
         description = "Controller for handling data between Survey UI and user uploaded surveys.",
         externalDocs = @ExternalDocumentation(
                 url = "https://www.google.com",
-                description = "Google"
+                description = "RESTful APIs with Spring Boot"
         )
 )
 @RestController
-@RequestMapping("/api/v1/surveys")
+@RequestMapping(value = "/api/v1/surveys")
 @RequiredArgsConstructor
 @Validated
 @SecurityRequirement(name = "bearerAuth")
@@ -56,8 +56,6 @@ public class SurveyResource {
     public List<SurveyDTO> retrieveAllSurveys() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Authentication using static call: " + authentication);
-        System.out.println("Authentication name using static call: " + authentication.getName());
-
         return surveyService.retrieveAllSurveys();
     }
 
@@ -81,13 +79,14 @@ public class SurveyResource {
                                     examples = {
                                             @ExampleObject(
                                                     name = "Invalid Token",
-                                                    value = "{\n" +
-                                                            "  \"timestamp\": \"2021-08-17T12:47:50.000+00:00\",\n" +
-                                                            "  \"status\": 403,\n" +
-                                                            "  \"error\": \"Forbidden\",\n" +
-                                                            "  \"message\": \"Access Denied\",\n" +
-                                                            "  \"path\": \"/api/v1/surveys/1\"\n" +
-                                                            "}"
+                                                    value = """
+                                                            {
+                                                              "timestamp": "2021-08-17T12:47:50.000+00:00",
+                                                              "status": 403,
+                                                              "error": "Forbidden",
+                                                              "message": "Access Denied",
+                                                              "path": "/api/v1/surveys/1"
+                                                            }"""
                                             )
                                     }
                             )
@@ -105,46 +104,48 @@ public class SurveyResource {
             )
     )
     @GetMapping("/{surveyId}")
-    public SurveyDTO retrieveSurveyById(@PathVariable @Min(1) int surveyId, Principal principal) {
+    public SurveyDTO retrieveSurveyById(
+            @PathVariable @Min(1) int surveyId,
+            Principal principal
+    ) {
         System.out.println("User principal: " + principal);
         System.out.println("User principal name: " + principal.getName());
 
-        SurveyDTO survey = surveyService.retrieveSurveyById(surveyId);
-        if (survey == null)
-            throw new NoSuchElementFoundException("Survey not found with id: " + surveyId);
-        return survey;
+        return surveyService.retrieveSurveyById(surveyId)
+                .orElseThrow(() -> new NoSuchElementFoundException("Survey not found with id: " + surveyId));
     }
 
     @GetMapping("/{surveyId}/questions")
-    public List<QuestionDTO> retrieveAllSurveyQuestions(@PathVariable int surveyId, Authentication authentication) {
+    public List<QuestionDTO> retrieveAllSurveyQuestions(
+            @PathVariable int surveyId,
+            Authentication authentication
+    ) {
         System.out.println("Authentication: " + authentication);
         System.out.println("Authentication name: " + authentication.getName());
         var userDetails = (User) authentication.getPrincipal();
         System.out.println("Authentication principal (userDetails): " + userDetails);
-        System.out.println("Authentication principal (userDetails, user has authorities): " + userDetails.getAuthorities());
 
-        var questions = surveyService.retrieveAllSurveyQuestions(surveyId);
-        if (questions == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return questions;
+        return surveyService.retrieveAllSurveyQuestions(surveyId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/{surveyId}/questions/{questionId}")
-    public QuestionDTO retrieveSpecificSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId, HttpServletRequest request) {
+    public QuestionDTO retrieveSpecificSurveyQuestion(
+            @PathVariable int surveyId,
+            @PathVariable int questionId,
+            HttpServletRequest request
+    ) {
         System.out.println("Request: " + request);
-        System.out.println("Request URI: " + request.getRequestURI());
-        System.out.println("Request URL: " + request.getRequestURL());
-        System.out.println("Request user Principal: " + request.getUserPrincipal());
-        System.out.println("Request user Principal name: " + request.getUserPrincipal().getName());
 
-        var question = surveyService.retrieveSpecificSurveyQuestion(surveyId, questionId);
-        if (question == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return question;
+        return surveyService.retrieveSpecificSurveyQuestion(surveyId, questionId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/{surveyId}/questions")
-    public ResponseEntity<Object> addNewSurveyQuestion(@PathVariable int surveyId, @Valid @RequestBody QuestionDTO question) {
+    public ResponseEntity<Object> addNewSurveyQuestion(
+            @PathVariable int surveyId,
+            @Valid @RequestBody QuestionDTO question
+    ) {
         var questionId = surveyService.addNewSurveyQuestion(surveyId, question);
         var location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{questionId}")
@@ -155,14 +156,19 @@ public class SurveyResource {
 
     @PutMapping("/{surveyId}/questions/{questionId}")
     public ResponseEntity<Object> updateSurveyQuestion(
-            @PathVariable int surveyId, @PathVariable int questionId,
-            @Valid @RequestBody QuestionDTO question) {
+            @PathVariable int surveyId,
+            @PathVariable int questionId,
+            @Valid @RequestBody QuestionDTO question
+    ) {
         surveyService.updateSurveyQuestion(surveyId, questionId, question);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{surveyId}/questions/{questionId}")
-    public ResponseEntity<Object> deleteSurveyQuestion(@PathVariable int surveyId, @PathVariable int questionId) {
+    public ResponseEntity<Object> deleteSurveyQuestion(
+            @PathVariable int surveyId,
+            @PathVariable int questionId
+    ) {
         surveyService.deleteSurveyQuestion(surveyId, questionId);
         return ResponseEntity.noContent().build();
     }
