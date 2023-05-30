@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -45,11 +47,14 @@ import java.util.List;
 public class SurveyResource {
 
     private final SurveyService surveyService;
+    private final MessageSource messageSource;
 
     @GetMapping("/hello")
     @Hidden
     public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Hello from our API");
+        var locale = LocaleContextHolder.getLocale();
+        var message = messageSource.getMessage("good.morning.message", null, "Default message", locale);
+        return ResponseEntity.ok("Hello from our API! " + message);
     }
 
     @GetMapping("")

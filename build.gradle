@@ -37,6 +37,9 @@ dependencies {
     // Spring boot 3 and swagger ui
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
+    // XML
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.1'
+
     // DB
     implementation 'org.flywaydb:flyway-core:9.14.1'
     implementation 'org.flywaydb:flyway-sqlserver:9.14.1'
