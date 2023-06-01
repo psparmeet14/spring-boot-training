@@ -3,7 +3,7 @@ package com.parmeet.springboottraining.survey.api.web.v1;
 import com.parmeet.springboottraining.exception.NoSuchElementFoundException;
 import com.parmeet.springboottraining.security.user.User;
 import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
-import com.parmeet.springboottraining.survey.api.models.SurveyDTO;
+import com.parmeet.springboottraining.survey.api.models.SurveyDTOV1;
 import com.parmeet.springboottraining.survey.service.SurveyService;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -58,7 +58,7 @@ public class SurveyResource {
     }
 
     @GetMapping("")
-    public List<SurveyDTO> retrieveAllSurveys() {
+    public List<SurveyDTOV1> retrieveAllSurveys() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Authentication using static call: " + authentication);
         return surveyService.retrieveAllSurveys();
@@ -109,7 +109,7 @@ public class SurveyResource {
             )
     )
     @GetMapping("/{surveyId}")
-    public SurveyDTO retrieveSurveyById(
+    public SurveyDTOV1 retrieveSurveyById(
             @PathVariable @Min(1) int surveyId,
             Principal principal
     ) {
