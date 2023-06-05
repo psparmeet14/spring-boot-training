@@ -1,12 +1,12 @@
 package com.parmeet.springboottraining.survey.service.mappers;
 
-import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
+import com.parmeet.springboottraining.survey.api.models.QuestionDTOV1;
 import com.parmeet.springboottraining.survey.repository.models.Question;
 
 public class QuestionMapper {
 
-    public static QuestionDTO mapToDTO(Question question) {
-        return new QuestionDTO(
+    public static QuestionDTOV1 mapToDTO(Question question) {
+        return new QuestionDTOV1(
                 question.getId(),
                 question.getName(),
                 question.getOptions(),
@@ -14,13 +14,13 @@ public class QuestionMapper {
         );
     }
 
-    public static Question mapFromDTO(QuestionDTO questionDTO) {
+    public static Question mapFromDTO(QuestionDTOV1 questionDTOV1) {
         return new Question(
-                questionDTO.getId(),
+                questionDTOV1.getId() != null ? questionDTOV1.getId() : 0,
                 0,
-                questionDTO.getName(),
-                questionDTO.getOptions(),
-                questionDTO.getCorrectAnswer()
+                questionDTOV1.getName(),
+                questionDTOV1.getOptions(),
+                questionDTOV1.getCorrectAnswer()
         );
     }
 }

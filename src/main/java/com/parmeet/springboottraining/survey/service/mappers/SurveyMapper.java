@@ -12,4 +12,13 @@ public class SurveyMapper {
                 survey.getQuestions().stream().map(QuestionMapper::mapToDTO).toList()
         );
     }
+
+    public static Survey mapFromDTO(SurveyDTOV1 surveyDTOV1) {
+        return new Survey(
+                surveyDTOV1.getId() != null ? surveyDTOV1.getId() : 0,
+                surveyDTOV1.getTitle(),
+                surveyDTOV1.getDescription(),
+                surveyDTOV1.getQuestions().stream().map(QuestionMapper::mapFromDTO).toList()
+        );
+    }
 }

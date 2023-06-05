@@ -2,7 +2,7 @@ package com.parmeet.springboottraining.survey.api.web.v1;
 
 import com.parmeet.springboottraining.exception.NoSuchElementFoundException;
 import com.parmeet.springboottraining.security.user.User;
-import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
+import com.parmeet.springboottraining.survey.api.models.QuestionDTOV1;
 import com.parmeet.springboottraining.survey.api.models.SurveyDTOV1;
 import com.parmeet.springboottraining.survey.service.SurveyService;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -121,7 +121,7 @@ public class SurveyResource {
     }
 
     @GetMapping("/{surveyId}/questions")
-    public List<QuestionDTO> retrieveAllSurveyQuestions(
+    public List<QuestionDTOV1> retrieveAllSurveyQuestions(
             @PathVariable int surveyId,
             Authentication authentication
     ) {
@@ -135,7 +135,7 @@ public class SurveyResource {
     }
 
     @GetMapping("/{surveyId}/questions/{questionId}")
-    public QuestionDTO retrieveSpecificSurveyQuestion(
+    public QuestionDTOV1 retrieveSpecificSurveyQuestion(
             @PathVariable int surveyId,
             @PathVariable int questionId,
             HttpServletRequest request
@@ -146,10 +146,22 @@ public class SurveyResource {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @PostMapping
+    public ResponseEntity<Object> addNewSurvey(
+            @Valid @RequestBody SurveyDTOV1 survey
+    ) {
+        var surveyId = surveyService.addNewSurvey(survey);
+        var location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{surveyId}")
+                .buildAndExpand(surveyId)
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
     @PostMapping("/{surveyId}/questions")
     public ResponseEntity<Object> addNewSurveyQuestion(
             @PathVariable int surveyId,
-            @Valid @RequestBody QuestionDTO question
+            @Valid @RequestBody QuestionDTOV1 question
     ) {
         var questionId = surveyService.addNewSurveyQuestion(surveyId, question);
         var location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -163,7 +175,7 @@ public class SurveyResource {
     public ResponseEntity<Object> updateSurveyQuestion(
             @PathVariable int surveyId,
             @PathVariable int questionId,
-            @Valid @RequestBody QuestionDTO question
+            @Valid @RequestBody QuestionDTOV1 question
     ) {
         surveyService.updateSurveyQuestion(surveyId, questionId, question);
         return ResponseEntity.noContent().build();

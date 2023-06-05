@@ -18,6 +18,24 @@ public class SurveyRepository {
 
     private final NamedParameterJdbcOperations jdbc;
 
+    public int addNewSurvey(Survey survey) {
+        var keyHolder = new GeneratedKeyHolder();
+        var sql = """
+                INSERT INTO SURVEY (
+                    TITLE,
+                    DESCRIPTION
+                )
+                VALUES (
+                    :title,
+                    :description
+                );
+                """;
+        var params = new MapSqlParameterSource()
+                .addValue("title", survey.getTitle())
+                .addValue("description", survey.getDescription());
+        return jdbc.update(sql, params, keyHolder);
+    }
+
     public Optional<List<Survey>> retrieveAllSurveys() {
         var sql = """
                 SELECT
@@ -119,4 +137,6 @@ public class SurveyRepository {
                 List.of(rs.getString("OPTIONS").split(",")),
                 rs.getString("CORRECT_ANSWER"));
     }
+
+
 }

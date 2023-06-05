@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class QuestionDTO {
+public class QuestionDTOV1 {
     private Integer id;
     @NotBlank
     private String name;

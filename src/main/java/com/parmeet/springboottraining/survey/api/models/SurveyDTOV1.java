@@ -16,5 +16,5 @@ public class SurveyDTOV1 {
     @NotBlank
     private String description;
     @NotEmpty
-    private List<QuestionDTO> questions;
+    private List<QuestionDTOV1> questions;
 }

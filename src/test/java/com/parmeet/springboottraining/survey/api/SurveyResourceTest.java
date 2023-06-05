@@ -1,7 +1,7 @@
 package com.parmeet.springboottraining.survey.api;
 
 import com.parmeet.springboottraining.security.configuration.JwtAuthFilter;
-import com.parmeet.springboottraining.survey.api.models.QuestionDTO;
+import com.parmeet.springboottraining.survey.api.models.QuestionDTOV1;
 import com.parmeet.springboottraining.survey.api.web.v1.SurveyResource;
 import com.parmeet.springboottraining.survey.service.SurveyService;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ class SurveyResourceTest {
                     "correctAnswer":"Python"
                 }
                 """;
-        var questionDTO = new QuestionDTO(
+        var questionDTO = new QuestionDTOV1(
                 5,
                 "Best programming language for Machine Learning",
                 Arrays.asList("Java", "GoLang", "Python", "JavaScript"),
