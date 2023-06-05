@@ -116,6 +116,28 @@ public class SurveyResource {
         System.out.println("User principal: " + principal);
         System.out.println("User principal name: " + principal.getName());
 
+        // HATEOAS
+        /*
+            - Hypermedia As The Engine Of Application State
+            - Enhancing the response with links to other resources
+            - Enhancing the REST API to tell consumers how to perform subsequent actions
+            - Use Standard Implementation:
+            - HAL (JSON Hypertext Application Language): Simple format that gives a consistent and easy way to hyperlink between resources in your API
+            - Spring HATEOAS: Generate HAL responses with hyperlinks to resources
+            {
+                "name": "Parmeet",
+                "birthDate": "2022-08-15",
+                "_links": {
+                    "all-users": {
+                        "href": "http://localhost:8080/api/v1/users"
+                    }
+                }
+            }
+         */
+
+        // Add link to all users
+
+
         return surveyService.retrieveSurveyById(surveyId)
                 .orElseThrow(() -> new NoSuchElementFoundException("Survey not found with id: " + surveyId));
     }
