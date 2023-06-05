@@ -33,7 +33,9 @@ public class SurveyRepository {
         var params = new MapSqlParameterSource()
                 .addValue("title", survey.getTitle())
                 .addValue("description", survey.getDescription());
-        return jdbc.update(sql, params, keyHolder);
+        
+        jdbc.update(sql, params, keyHolder);
+        return keyHolder.getKey() != null ? (int) keyHolder.getKey() : 0;
     }
 
     public Optional<List<Survey>> retrieveAllSurveys() {

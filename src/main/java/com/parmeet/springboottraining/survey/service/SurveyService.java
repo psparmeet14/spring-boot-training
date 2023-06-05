@@ -7,6 +7,7 @@ import com.parmeet.springboottraining.survey.service.mappers.QuestionMapper;
 import com.parmeet.springboottraining.survey.service.mappers.SurveyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +19,11 @@ public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final QuestionService questionService;
 
+    @Transactional
     public int addNewSurvey(SurveyDTOV1 surveyDTOV1) {
         var survey = SurveyMapper.mapFromDTO(surveyDTOV1);
         var surveyId = surveyRepository.addNewSurvey(survey);
+        surveyDTOV1.setQuestions(null);
         surveyDTOV1.getQuestions()
                 .forEach(questionDTOV1 -> addNewSurveyQuestion(surveyId, questionDTOV1));
         return surveyId;
