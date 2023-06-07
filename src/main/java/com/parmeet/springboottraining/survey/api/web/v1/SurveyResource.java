@@ -1,5 +1,7 @@
 package com.parmeet.springboottraining.survey.api.web.v1;
 
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.parmeet.springboottraining.exception.NoSuchElementFoundException;
 import com.parmeet.springboottraining.security.user.User;
 import com.parmeet.springboottraining.survey.api.models.QuestionDTOV1;
@@ -19,8 +21,10 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +34,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.security.Principal;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Tag(
         name = "Survey controller",
@@ -109,7 +116,7 @@ public class SurveyResource {
             )
     )
     @GetMapping("/{surveyId}")
-    public SurveyDTOV1 retrieveSurveyById(
+    public EntityModel<SurveyDTOV1> retrieveSurveyById(
             @PathVariable @Min(1) int surveyId,
             Principal principal
     ) {
@@ -124,6 +131,7 @@ public class SurveyResource {
             - Use Standard Implementation:
             - HAL (JSON Hypertext Application Language): Simple format that gives a consistent and easy way to hyperlink between resources in your API
             - Spring HATEOAS: Generate HAL responses with hyperlinks to resources
+            - Example:
             {
                 "name": "Parmeet",
                 "birthDate": "2022-08-15",
@@ -135,15 +143,20 @@ public class SurveyResource {
             }
          */
 
-        // Add link to all users
+        // Add link to all users HATEOAS
+        var surveyDTOV1Optional = surveyService.retrieveSurveyById(surveyId);
+        if (surveyDTOV1Optional.isEmpty()) {
+            throw new NoSuchElementFoundException("Survey not found with id: " + surveyId);
+        }
+        var entityModel = EntityModel.of(surveyDTOV1Optional.get());
+        var link = linkTo(methodOn(this.getClass()).retrieveAllSurveys());
+        entityModel.add(link.withRel("all-surveys"));
 
-
-        return surveyService.retrieveSurveyById(surveyId)
-                .orElseThrow(() -> new NoSuchElementFoundException("Survey not found with id: " + surveyId));
+        return entityModel;
     }
 
     @GetMapping("/{surveyId}/questions")
-    public List<QuestionDTOV1> retrieveAllSurveyQuestions(
+    public MappingJacksonValue retrieveAllSurveyQuestions(
             @PathVariable int surveyId,
             Authentication authentication
     ) {
@@ -152,8 +165,18 @@ public class SurveyResource {
         var userDetails = (User) authentication.getPrincipal();
         System.out.println("Authentication principal (userDetails): " + userDetails);
 
-        return surveyService.retrieveAllSurveyQuestions(surveyId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        var optionalQuestionDTOV1s = surveyService.retrieveAllSurveyQuestions(surveyId);
+        if (optionalQuestionDTOV1s.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        // Dynamic property filtering
+        var mappingJacksonValue = new MappingJacksonValue(optionalQuestionDTOV1s.get());
+        var filter = SimpleBeanPropertyFilter.filterOutAllExcept("id", "question_name", "options");
+        var filterProvider = new SimpleFilterProvider().addFilter("SurveyQuestionFilter", filter).setFailOnUnknownId(false);
+        mappingJacksonValue.setFilters(filterProvider);
+
+        return mappingJacksonValue;
     }
 
     @GetMapping("/{surveyId}/questions/{questionId}")

@@ -1,5 +1,6 @@
 package com.parmeet.springboottraining.survey.api.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.List;
 public class SurveyDTOV1 {
     private Integer id;
     @NotBlank
+    @JsonProperty("survey_title")
     private String title;
     @NotBlank
     private String description;
