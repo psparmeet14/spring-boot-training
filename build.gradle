@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 
-    // Devtools, Lombok, JWT, Jaxb, gson
+    // Devtools, Lombok, JWT, Jaxb, gson, hal explorer
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -41,6 +41,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'org.springframework.data:spring-data-rest-hal-explorer:4.1.0'
 
 
     // Spring boot 3 and swagger ui
