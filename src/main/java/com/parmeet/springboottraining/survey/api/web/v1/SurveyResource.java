@@ -26,9 +26,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -67,6 +75,15 @@ public class SurveyResource {
     @GetMapping("")
     public List<SurveyDTOV1> retrieveAllSurveys() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
+        /* authentication = UsernamePasswordAuthenticationToken
+         *  [
+         *    Principal=User(id=0, firstName=Parmeet, lastName=Singh, email=psparmeet14@gmail.com, password=$2a$10$JSWcGgS.GE8mZrggkrDH1uT5jfmFYNGauVvJyn2FOt0bxXD4sYvEm, role=USER),
+         *    Credentials=null,
+         *    Authenticated=true,
+         *    Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null],
+         *    Granted Authorities=[USER]
+         *  ]
+        */
         System.out.println("Authentication using static call: " + authentication);
         return surveyService.retrieveAllSurveys();
     }
@@ -122,25 +139,17 @@ public class SurveyResource {
     ) {
         System.out.println("User principal: " + principal);
         System.out.println("User principal name: " + principal.getName());
-
-        // HATEOAS
         /*
-            - Hypermedia As The Engine Of Application State
-            - Enhancing the response with links to other resources
-            - Enhancing the REST API to tell consumers how to perform subsequent actions
-            - Use Standard Implementation:
-            - HAL (JSON Hypertext Application Language): Simple format that gives a consistent and easy way to hyperlink between resources in your API
-            - Spring HATEOAS: Generate HAL responses with hyperlinks to resources
-            - Example:
-            {
-                "name": "Parmeet",
-                "birthDate": "2022-08-15",
-                "_links": {
-                    "all-users": {
-                        "href": "http://localhost:8080/api/v1/users"
-                    }
-                }
-            }
+            principal = UsernamePasswordAuthenticationToken
+            [
+                Principal=User(id=0, firstName=Parmeet, lastName=Singh, email=psparmeet14@gmail.com, password=$2a$10$i7kZz.XMdrxIhz6.xx86MOVvmjUYP2DU68lJXP8w1oX0pL3KQf2s., role=USER),
+                Credentials=[PROTECTED],
+                Authenticated=true,
+                Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null],
+                Granted Authorities=[USER]
+             ]
+
+             principal.getName() = psparmeet14@gmail.com
          */
 
         // Add link to all users HATEOAS
@@ -165,6 +174,21 @@ public class SurveyResource {
         var userDetails = (User) authentication.getPrincipal();
         System.out.println("Authentication principal (userDetails): " + userDetails);
 
+        /*
+            authentication= UsernamePasswordAuthenticationToken
+            [Principal=User(id=0, firstName=Parmeet, lastName=Singh, email=psparmeet14@gmail.com, password=$2a$10$hYuQp/rdJbB9P302WnoS1eEU7VQqKxgoEhOW6U0mCT3LU1hrkcY16, role=USER),
+             Credentials=[PROTECTED],
+             Authenticated=true,
+             Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null],
+             Granted Authorities=[USER]
+            ]
+
+            authentication.getName() = psparmeet14@gmail.com
+
+            (User) authentication.getPrincipal()
+                    = User(id=0, firstName=Parmeet, lastName=Singh, email=psparmeet14@gmail.com, password=$2a$10$hYuQp/rdJbB9P302WnoS1eEU7VQqKxgoEhOW6U0mCT3LU1hrkcY16, role=USER)
+         */
+
         var optionalQuestionDTOV1s = surveyService.retrieveAllSurveyQuestions(surveyId);
         if (optionalQuestionDTOV1s.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -183,9 +207,18 @@ public class SurveyResource {
     public QuestionDTOV1 retrieveSpecificSurveyQuestion(
             @PathVariable int surveyId,
             @PathVariable int questionId,
-            HttpServletRequest request
+            HttpServletRequest request,
+            @AuthenticationPrincipal User user
     ) {
         System.out.println("Request: " + request);
+        System.out.println("Request URI: " + request.getRequestURI());
+        System.out.println("User user: " + user);
+
+        /*
+            request.getRequestURI() = /api/v1/surveys/1/questions/1
+
+            user =  User(id=0, firstName=Parmeet, lastName=Singh, email=psparmeet14@gmail.com, password=$2a$10$sEWE.c5nPMAXWUXEWJYGuOqGgN5XCERUZ/Wa.8GalsBH2o9ng1Z2a, role=USER)
+         */
 
         return surveyService.retrieveSpecificSurveyQuestion(surveyId, questionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
