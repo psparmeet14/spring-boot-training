@@ -53,7 +53,7 @@ class SurveyResourceTest {
         var expectedResponse = """
                 {
                     "id":5,
-                    "name":"Best programming language for Machine Learning",
+                    "question_name":"Best programming language for Machine Learning",
                     "options":["Java","GoLang","Python","JavaScript"],
                     "correctAnswer":"Python"
                 }

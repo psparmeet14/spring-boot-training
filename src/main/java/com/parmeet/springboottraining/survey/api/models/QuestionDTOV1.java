@@ -1,6 +1,5 @@
 package com.parmeet.springboottraining.survey.api.models;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -11,7 +10,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-@JsonFilter("SurveyQuestionFilter")
+//@JsonFilter("SurveyQuestionFilter")
 public class QuestionDTOV1 {
     private Integer id;
     @NotBlank

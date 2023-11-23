@@ -1,0 +1,74 @@
+openapi: 3.0.3 #mandatory root element
+info: #provides meta-data about your API | mandatory root element
+  title: MyApplication APIs Definition #mandatory field
+  description: |
+    This is a detailed description about my API. Using this OpenAPI Specification,
+    any consumercan understand the APIs that are exposed by MyApplcation.
+  termsOfService: www.google.com
+  contact: 
+    name: API Support
+    url: https://www.google.com
+    email: psparmeet14@gmail.com
+  license: 
+    name: MyApplication License 2.0 #mandatory field
+    url: https://www.google.com 
+  version: 0.0.1 #mandatory field
+servers: #endpoint url to access consume apis
+  - url: https://development.myapplication-server.com/v1 #mandatory field
+    description: Development server
+  - url: https://staging.myapplication-server.com/v1
+    description: Staging server
+  - url: https://prod.myapplication-server.com/v1
+    description: Production server
+  - url: https://{username}.server.com:{port}/{version}
+    variables:
+      username:
+        default: demo
+        description: This value is assigned by the service provider.
+      port:
+        enum:
+          - "8443"
+          - "443"
+        default: "8443"
+      version: 
+        default: v1
+paths: #manadatory root element
+  /categories:
+    get:
+      summary: List all categories
+      description: Returns the list of categories supported by MyEComApp
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    categoryId:
+                      type: integer
+                    name:
+                      type: string
+  /purchases:
+    get:
+      summary: List all your purchases
+      description: Returns the list of all purchases done by you
+      responses:
+        '200':
+          description: A list of purchases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    purchaseId: 
+                      type: integer
+                    articleName:
+                      type: string
+
+
+                
