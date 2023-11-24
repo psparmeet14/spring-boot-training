@@ -37,6 +37,14 @@ paths: #manadatory root element
     get:
       summary: List all categories
       description: Returns the list of categories supported by MyEComApp
+      parameters:
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+            minimum: 100
+            maximum: 1000
+          example: 101
       responses:
         '200':
           description: A list of categories
@@ -51,6 +59,31 @@ paths: #manadatory root element
                       type: integer
                     name:
                       type: string
+  /categories/{categoryId}:
+    get:
+      summary: List particular category
+      description: Returns the particular category based on categoryId
+      parameters:
+        - name: categoryId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 100
+            maximum: 1000
+          example: 201
+      responses:
+        '200': # OK
+          description: A particular category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categoryId:
+                    type: integer
+                  name:
+                    type: string
   /purchases:
     get:
       summary: List all your purchases

@@ -1,1 +1,5 @@
 rootProject.name = 'spring-boot-training'
+include 'services'
+include 'services:survey'
+findProject(':services:survey')?.name = 'survey'
+
