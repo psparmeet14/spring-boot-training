@@ -61,8 +61,8 @@ paths: #manadatory root element
                       type: string
   /categories/{categoryId}:
     get:
-      summary: List particular category
-      description: Returns the particular category based on categoryId
+      summary: List particular category details
+      description: Returns the particular category details based on categoryId from MyEComApp
       parameters:
         - name: categoryId
           in: path
@@ -84,6 +84,72 @@ paths: #manadatory root element
                     type: integer
                   name:
                     type: string
+  /products:
+    get:
+      summary: List all products
+      description: |
+        Returns the list of all the products (or all the products in the specified category) 
+        supported by MyEComApp
+      parameters:
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+            minimum: 100
+            maximum: 1000
+          example: 201
+      responses:
+        '200':
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    productId:
+                      type: integer
+                    name:
+                      type: string
+                    price:
+                      type: number
+                    categoryName:
+                      type: string
+                    quantity:
+                      type: integer
+  /products/{productId}:
+    get:
+      summary: Returns product details
+      description: |
+        Returns the particular product details from MyEComApp
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+          example: 999
+      responses:
+        '200':
+          description: Returns product details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  productId:
+                    type: integer
+                  name: 
+                    type: string
+                  price:  
+                    type: number
+                  categoryName:
+                    type: string
+                  quantity:
+                    type: integer
   /purchases:
     get:
       summary: List all your purchases
