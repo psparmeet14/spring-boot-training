@@ -197,6 +197,105 @@ paths: #manadatory root element
                 properties:
                   orderId:
                     type: integer
+    put:
+      summary: Update order
+      description: |
+        Update order details to MyEComApp for processing 
+        and shipping
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: integer
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId: 
+                        type: integer
+                      name:
+                        type: string
+                      price:
+                        type: number
+                      categoryName:
+                        type: string
+                      quantity:
+                        type: integer
+                address:
+                  type: object
+                  properties:
+                    addressLine:
+                      type: string
+                    city:
+                      type: string
+                    state: 
+                      type: string
+                    zipCode:
+                      type: string
+      responses:
+        '200':
+          description: Order updated successfully
+    delete:
+      summary: Delete order
+      description: Delete order details from MyEComApp
+      parameters:
+        - name: orderId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204': #no content
+          description: Order details cancelled successfully
+    get:
+      summary: Get Order details
+      description: Returns complete order details from MyEComApp
+      parameters:
+        - name: orderId
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Fetched the order details successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: integer
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productId: 
+                          type: integer
+                        name:
+                          type: string
+                        price:
+                          type: number
+                        categoryName:
+                          type: string
+                        quantity:
+                          type: integer
+                  address:
+                    type: object
+                    properties:
+                      addressLine:
+                        type: string
+                      city:
+                        type: string
+                      state: 
+                        type: string
+                      zipCode:
+                        type: string
   /purchases:
     get:
       summary: List all your purchases
