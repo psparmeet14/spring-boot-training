@@ -150,6 +150,53 @@ paths: #manadatory root element
                     type: string
                   quantity:
                     type: integer
+  /orders:
+    post:
+      summary: Create order
+      description: |
+        Post order details to MyEComApp for processing and shipping
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId: 
+                        type: integer
+                      name:
+                        type: string
+                      price:
+                        type: number
+                      categoryName:
+                        type: string
+                      quantity:
+                        type: integer
+                address:
+                  type: object
+                  properties:
+                    addressLine:
+                      type: string
+                    city:
+                      type: string
+                    state: 
+                      type: string
+                    zipCode:
+                      type: string
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: integer
   /purchases:
     get:
       summary: List all your purchases
@@ -168,6 +215,6 @@ paths: #manadatory root element
                       type: integer
                     articleName:
                       type: string
-
+ 
 
                 
