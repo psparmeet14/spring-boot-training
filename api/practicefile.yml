@@ -42,9 +42,20 @@ servers: #endpoint url to access consume apis
         default: "8443"
       version: 
         default: v1
+tags:
+  - name: Categories
+    description: Categories-related operations
+  - name: Products
+    description: Products-related operations
+  - name: Orders
+    description: Orders-related operations
+  - name: Purchases
+    description: Purchases-related operations
 paths: #manadatory root element
   /categories:
     get:
+      tags:
+        - Categories
       summary: List all categories
       description: Returns the list of categories supported by MyEComApp
       parameters:
@@ -97,6 +108,8 @@ paths: #manadatory root element
                       name: Mobiles
   /categories/{categoryId}:
     get:
+      tags:
+        - Categories
       summary: List particular category details
       description: Returns the particular category details based on categoryId from MyEComApp
       parameters:
@@ -122,6 +135,8 @@ paths: #manadatory root element
                     type: string
   /products:
     get:
+      tags:
+        - Products
       summary: List all products
       description: |
         Returns the list of all the products (or all the products in the specified category) 
@@ -181,6 +196,8 @@ paths: #manadatory root element
                       
   /products/{productId}:
     get:
+      tags:
+        - Products
       summary: Returns product details
       description: |
         Returns the particular product details from MyEComApp
@@ -218,6 +235,8 @@ paths: #manadatory root element
                         the scenario of stopping the end user <u>*when the stock value is 0*</u>
   /orders:
     post:
+      tags:
+        - Orders
       summary: Create order
       description: |
         Post order details to MyEComApp for processing and shipping
@@ -269,6 +288,8 @@ paths: #manadatory root element
                   orderId:
                     type: integer
     put:
+      tags:
+        - Orders
       summary: Update order
       description: |
         Update order details to MyEComApp for processing 
@@ -316,6 +337,8 @@ paths: #manadatory root element
         '200':
           description: Order updated successfully
     delete:
+      tags:
+        - Orders
       summary: Delete order
       description: Delete order details from MyEComApp
       parameters:
@@ -328,6 +351,8 @@ paths: #manadatory root element
         '204': #no content
           description: Order details cancelled successfully
     get:
+      tags:
+        - Orders
       summary: Get Order details
       description: Returns complete order details from MyEComApp
       parameters:
@@ -374,6 +399,8 @@ paths: #manadatory root element
                         type: string
   /purchases:
     get:
+      tags:
+        - Purchases
       summary: List all your purchases
       description: Returns the list of all purchases done by you
       responses:
