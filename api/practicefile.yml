@@ -1,9 +1,19 @@
 openapi: 3.0.3 #mandatory root element
 info: #provides meta-data about your API | mandatory root element
-  title: MyApplication APIs Definition #mandatory field
+  title: MyEComApp APIs Definition #mandatory field
   description: |
-    This is a detailed description about my API. Using this OpenAPI Specification,
-    any consumercan understand the APIs that are exposed by MyApplcation.
+    # About Us
+    **MyEComApp** is an open market product selling company. Any website can list our products by using
+    our _APIs_. Shipping & other logistics will be taken care by us. You will get an `Affiliate commission`
+    for selling our products.
+    ## Categories supported
+      - Mobiles
+        - Apple
+        - Samsung
+        - OnePlus
+      - Laptops
+      - Televisions
+      - Headphones
   termsOfService: www.google.com
   contact: 
     name: API Support
@@ -44,7 +54,16 @@ paths: #manadatory root element
             type: integer
             minimum: 100
             maximum: 1000
-          example: 101
+          examples:
+            mobiles:
+              summary: Use this example for mobiles
+              value: 101
+            laptops:
+              value: 102
+            headphones:
+              value: 103
+            televisions:
+              value: 104
       responses:
         '200':
           description: A list of categories
@@ -59,6 +78,23 @@ paths: #manadatory root element
                       type: integer
                     name:
                       type: string
+              examples:
+                all-categories-data:
+                  summary: Categories example data
+                  value:
+                    - categoryId: 101
+                      name: Mobiles
+                    - categoryId: 102
+                      name: Laptops
+                    - categoryId: 103
+                      name: Headphones
+                    - categoryId: 104
+                      name: Televisions
+                single-category-data:
+                  summary: Single category example data
+                  value: 
+                    - categoryId: 101
+                      name: Mobiles
   /categories/{categoryId}:
     get:
       summary: List particular category details
@@ -118,6 +154,31 @@ paths: #manadatory root element
                       type: string
                     quantity:
                       type: integer
+                      description: |
+                        ***Quantity*** represents `stock` value when this field is being sent by 
+                        MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
+                        `number of product items` inside the order. Consumers are expected to handle
+                        the scenario of stopping the end user <u>*when the stock value is 0*</u>
+              examples:
+                products-data:
+                  summary: Products example data
+                  value:
+                    - productId: 101
+                      name: Apple Iphone 14 Pro
+                      price: 999.00
+                      categoryName: Mobiles
+                      quantity: 96
+                    - productId: 102
+                      name: Samsung S23 Ultra
+                      price: 899.00
+                      categoryName: Mobiles
+                      quantity: 121
+                    - productId: 103
+                      name: OnePlus 11 Pro 5G
+                      price: 750.00
+                      categoryName: Mobiles
+                      quantity: 67
+                      
   /products/{productId}:
     get:
       summary: Returns product details
@@ -150,6 +211,11 @@ paths: #manadatory root element
                     type: string
                   quantity:
                     type: integer
+                    description: |
+                        ***Quantity*** represents `stock` value when this field is being sent by 
+                        MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
+                        `number of product items` inside the order. Consumers are expected to handle
+                        the scenario of stopping the end user <u>*when the stock value is 0*</u>
   /orders:
     post:
       summary: Create order
@@ -176,6 +242,11 @@ paths: #manadatory root element
                         type: string
                       quantity:
                         type: integer
+                        description: |
+                          ***Quantity*** represents `stock` value when this field is being sent by 
+                          MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
+                          `number of product items` inside the order. Consumers are expected to handle
+                          the scenario of stopping the end user <u>*when the stock value is 0*</u>
                 address:
                   type: object
                   properties:
@@ -225,6 +296,11 @@ paths: #manadatory root element
                         type: string
                       quantity:
                         type: integer
+                        description: |
+                          ***Quantity*** represents `stock` value when this field is being sent by 
+                          MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
+                          `number of product items` inside the order. Consumers are expected to handle
+                          the scenario of stopping the end user <u>*when the stock value is 0*</u>
                 address:
                   type: object
                   properties:
