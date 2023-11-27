@@ -59,22 +59,7 @@ paths: #manadatory root element
       summary: List all categories
       description: Returns the list of categories supported by MyEComApp
       parameters:
-        - name: categoryId
-          in: query
-          schema:
-            type: integer
-            minimum: 100
-            maximum: 1000
-          examples:
-            mobiles:
-              summary: Use this example for mobiles
-              value: 101
-            laptops:
-              value: 102
-            headphones:
-              value: 103
-            televisions:
-              value: 104
+        - $ref: "#/components/parameters/categoryIdQueryParam"
       responses:
         '200':
           description: A list of categories
@@ -83,12 +68,7 @@ paths: #manadatory root element
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    categoryId:
-                      type: integer
-                    name:
-                      type: string
+                  $ref: "#/components/schemas/Category"
               examples:
                 all-categories-data:
                   summary: Categories example data
@@ -106,6 +86,8 @@ paths: #manadatory root element
                   value: 
                     - categoryId: 101
                       name: Mobiles
+        '500':
+          $ref: "#/components/responses/InternalServerError"
   /categories/{categoryId}:
     get:
       tags:
@@ -113,26 +95,16 @@ paths: #manadatory root element
       summary: List particular category details
       description: Returns the particular category details based on categoryId from MyEComApp
       parameters:
-        - name: categoryId
-          in: path
-          required: true
-          schema:
-            type: integer
-            minimum: 100
-            maximum: 1000
-          example: 201
+        - $ref: "#/components/parameters/categoryIdPathParam"
       responses:
         '200': # OK
           description: A particular category
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  categoryId:
-                    type: integer
-                  name:
-                    type: string
+                $ref: "#/components/schemas/Category"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
   /products:
     get:
       tags:
@@ -142,13 +114,7 @@ paths: #manadatory root element
         Returns the list of all the products (or all the products in the specified category) 
         supported by MyEComApp
       parameters:
-        - name: categoryId
-          in: query
-          schema:
-            type: integer
-            minimum: 100
-            maximum: 1000
-          example: 201
+        - $ref: "#/components/parameters/categoryIdQueryParam"
       responses:
         '200':
           description: A list of products
@@ -157,23 +123,7 @@ paths: #manadatory root element
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    productId:
-                      type: integer
-                    name:
-                      type: string
-                    price:
-                      type: number
-                    categoryName:
-                      type: string
-                    quantity:
-                      type: integer
-                      description: |
-                        ***Quantity*** represents `stock` value when this field is being sent by 
-                        MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
-                        `number of product items` inside the order. Consumers are expected to handle
-                        the scenario of stopping the end user <u>*when the stock value is 0*</u>
+                  $ref: "#/components/schemas/Product"
               examples:
                 products-data:
                   summary: Products example data
@@ -193,7 +143,8 @@ paths: #manadatory root element
                       price: 750.00
                       categoryName: Mobiles
                       quantity: 67
-                      
+        '500':
+          $ref: "#/components/responses/InternalServerError"
   /products/{productId}:
     get:
       tags:
@@ -202,37 +153,16 @@ paths: #manadatory root element
       description: |
         Returns the particular product details from MyEComApp
       parameters:
-        - name: productId
-          in: path
-          required: true
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 1000
-          example: 999
+        - $ref: "#/components/parameters/productIdPathParam"
       responses:
         '200':
           description: Returns product details
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  productId:
-                    type: integer
-                  name: 
-                    type: string
-                  price:  
-                    type: number
-                  categoryName:
-                    type: string
-                  quantity:
-                    type: integer
-                    description: |
-                        ***Quantity*** represents `stock` value when this field is being sent by 
-                        MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
-                        `number of product items` inside the order. Consumers are expected to handle
-                        the scenario of stopping the end user <u>*when the stock value is 0*</u>
+                $ref: "#/components/schemas/Product"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
   /orders:
     post:
       tags:
@@ -249,34 +179,9 @@ paths: #manadatory root element
                 products:
                   type: array
                   items:
-                    type: object
-                    properties:
-                      productId: 
-                        type: integer
-                      name:
-                        type: string
-                      price:
-                        type: number
-                      categoryName:
-                        type: string
-                      quantity:
-                        type: integer
-                        description: |
-                          ***Quantity*** represents `stock` value when this field is being sent by 
-                          MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
-                          `number of product items` inside the order. Consumers are expected to handle
-                          the scenario of stopping the end user <u>*when the stock value is 0*</u>
+                    $ref: "#/components/schemas/Product"
                 address:
-                  type: object
-                  properties:
-                    addressLine:
-                      type: string
-                    city:
-                      type: string
-                    state: 
-                      type: string
-                    zipCode:
-                      type: string
+                  $ref: "#/components/schemas/Address"
       responses:
         '201':
           description: Order created successfully
@@ -287,6 +192,8 @@ paths: #manadatory root element
                 properties:
                   orderId:
                     type: integer
+        '500':
+          $ref: "#/components/responses/InternalServerError"
     put:
       tags:
         - Orders
@@ -305,62 +212,33 @@ paths: #manadatory root element
                 products:
                   type: array
                   items:
-                    type: object
-                    properties:
-                      productId: 
-                        type: integer
-                      name:
-                        type: string
-                      price:
-                        type: number
-                      categoryName:
-                        type: string
-                      quantity:
-                        type: integer
-                        description: |
-                          ***Quantity*** represents `stock` value when this field is being sent by 
-                          MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
-                          `number of product items` inside the order. Consumers are expected to handle
-                          the scenario of stopping the end user <u>*when the stock value is 0*</u>
+                    $ref: "#/components/schemas/Product"
                 address:
-                  type: object
-                  properties:
-                    addressLine:
-                      type: string
-                    city:
-                      type: string
-                    state: 
-                      type: string
-                    zipCode:
-                      type: string
+                  $ref: "#/components/schemas/Address"
       responses:
         '200':
           description: Order updated successfully
+        '500':
+          $ref: "#/components/responses/InternalServerError"
     delete:
       tags:
         - Orders
       summary: Delete order
       description: Delete order details from MyEComApp
       parameters:
-        - name: orderId
-          in: query
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/orderIdQueryParam"
       responses:
         '204': #no content
           description: Order details cancelled successfully
+        '500':
+          $ref: "#/components/responses/InternalServerError"
     get:
       tags:
         - Orders
       summary: Get Order details
       description: Returns complete order details from MyEComApp
       parameters:
-        - name: orderId
-          in: query
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/orderIdQueryParam"
       responses:
         '200':
           description: Fetched the order details successfully
@@ -374,29 +252,11 @@ paths: #manadatory root element
                   products:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        productId: 
-                          type: integer
-                        name:
-                          type: string
-                        price:
-                          type: number
-                        categoryName:
-                          type: string
-                        quantity:
-                          type: integer
+                      $ref: "#/components/schemas/Product"
                   address:
-                    type: object
-                    properties:
-                      addressLine:
-                        type: string
-                      city:
-                        type: string
-                      state: 
-                        type: string
-                      zipCode:
-                        type: string
+                    $ref: "#/components/schemas/Address"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
   /purchases:
     get:
       tags:
@@ -411,12 +271,101 @@ paths: #manadatory root element
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    purchaseId: 
-                      type: integer
-                    articleName:
-                      type: string
- 
+                  $ref: "#/components/schemas/Purchase"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+components:
+  parameters:
+    categoryIdPathParam:
+      name: categoryId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 100
+        maximum: 1000
+      example: 201
+    categoryIdQueryParam:
+      name: categoryId
+      in: query
+      schema:
+        type: integer
+        minimum: 100
+        maximum: 1000
+      examples:
+        mobiles:
+          summary: Use this example for mobiles
+          value: 101
+        laptops:
+          value: 102
+        headphones:
+          value: 103
+        televisions:
+          value: 104
+    orderIdQueryParam:
+      name: orderId
+      in: query
+      required: true
+      schema:
+        type: integer
+    productIdPathParam:
+      name: productId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+      example: 999
+  schemas:
+    Address:
+      type: object
+      properties:
+        addressLine:
+          type: string
+        city:
+          type: string
+        state: 
+          type: string
+        zipcode:
+          type: string
+      required: [addressLine, city, state, zipcode]
+    Product:
+      type: object
+      properties:
+        productId:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        categoryName:
+          type: string
+        quantity:
+          type: integer
+          description: |
+            ***Quantity*** represents `stock` value when this field is being sent by 
+            MyEComApp. Whereas in the scenarios of consumer sending this field, it represents
+            `number of product items` inside the order. Consumers are expected to handle
+            the scenario of stopping the end user <u>*when the stock value is 0*</u>
+    Category:
+      type: object
+      properties:
+        categoryId:
+          type: integer
+        name:
+          type: string
+    Purchase:
+      type: object
+      properties:
+        purchaseId: 
+          type: integer
+        articleName:
+          type: string
+  responses:
+    InternalServerError:
+      description: |
+        An error occurred while processing the request. Please contact
+        support@myecomapp.com
 
                 
