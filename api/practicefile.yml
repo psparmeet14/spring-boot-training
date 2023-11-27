@@ -130,17 +130,17 @@ paths: #manadatory root element
                   value:
                     - productId: 101
                       name: Apple Iphone 14 Pro
-                      price: 999.00
+                      price: 999.99
                       categoryName: Mobiles
                       quantity: 96
                     - productId: 102
                       name: Samsung S23 Ultra
-                      price: 899.00
+                      price: 899.99
                       categoryName: Mobiles
                       quantity: 121
                     - productId: 103
                       name: OnePlus 11 Pro 5G
-                      price: 750.00
+                      price: 750.99
                       categoryName: Mobiles
                       quantity: 67
         '500':
@@ -180,6 +180,9 @@ paths: #manadatory root element
                   type: array
                   items:
                     $ref: "#/components/schemas/Product"
+                  minItems: 1
+                  maxItems: 10
+                  uniqueItems: true
                 address:
                   $ref: "#/components/schemas/Address"
       responses:
@@ -329,18 +332,26 @@ components:
           type: string
         zipcode:
           type: string
+        isOfficeAddress:
+          type: boolean
       required: [addressLine, city, state, zipcode]
     Product:
       type: object
       properties:
         productId:
-          type: integer
+          type: integer # normal numbers without decimal values
         name:
           type: string
         price:
-          type: number
+          type: number # decimal values like float and double
+          format: float
         categoryName:
           type: string
+          nullable: true
+        releaseDate:
+          type: string
+          format: date
+          readOnly: true
         quantity:
           type: integer
           description: |
