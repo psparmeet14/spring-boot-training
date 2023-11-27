@@ -378,6 +378,30 @@ components:
           type: integer
         articleName:
           type: string
+    Mobile:
+      allOf:
+        - $ref: "#/components/schemas/Product"
+        - type: object
+          properties:
+            networkType:
+              type: string
+              enum:
+                - 4G
+                - 5G
+              example: 5G
+          required: [networkType]
+    Laptop:
+      allOf:
+        - $ref: "#/components/schemas/Product"
+        - type: object
+          properties:
+            ram:
+              type: string
+              enum:
+                - 8 GB
+                - 16 GB
+                - 32 GB
+          required: [ram]
   responses:
     InternalServerError:
       description: |
