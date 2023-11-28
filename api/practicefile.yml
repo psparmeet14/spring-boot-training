@@ -274,7 +274,7 @@ paths: #manadatory root element
               properties:
                 products:
                   type: object
-                  oneOf:
+                  oneOf: # ONLY ONE OF THE SCHEMA IS ALLOWED
                     - $ref: "#/components/schemas/Mobile"
                     - $ref: "#/components/schemas/Laptop"
                 address:
@@ -285,6 +285,35 @@ paths: #manadatory root element
       responses:
         '200':
           description: Order placed successfully
+  /anyOfOrder:
+    get:
+      tags:
+        - Orders
+      summary: Get Order Details
+      description: Get Order Details based on Order Id
+      parameters:
+        - $ref: "#/components/parameters/orderIdQueryParam"
+        - name: fetchType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - summary
+              - details
+          description: >
+            Fetch Type:
+              * `summary` - Will provide Order Summary
+              * `details` - Will provide Order Summary and Order Address
+      responses:
+        '200':
+          description: Returns Product Details
+          content:
+            application/json:
+              schema:
+                anyOf: # ONE OR MORE SCHEMAS (COMBINATION) ARE ALLOWED
+                  - $ref: "#/components/schemas/OrderSummary"
+                  - $ref: "#/components/schemas/OrderAddress"
   /purchases:
     get:
       tags:
@@ -427,6 +456,18 @@ components:
                 - 16 GB
                 - 32 GB
           required: [ram]
+    OrderSummary:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+    OrderAddress:
+      type: object
+      properties:
+        address:
+          $ref: "#/components/schemas/Address"
   responses:
     InternalServerError:
       description: |
