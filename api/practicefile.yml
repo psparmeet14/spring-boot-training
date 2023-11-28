@@ -260,6 +260,31 @@ paths: #manadatory root element
                     $ref: "#/components/schemas/Address"
         '500':
           $ref: "#/components/responses/InternalServerError"
+  /oneOfOrder:
+    post:
+      tags:
+        - Orders
+      summary: Insert OneOf the Order Details
+      description: Insert OneOf the Order Details in MyEComApp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: object
+                  oneOf:
+                    - $ref: "#/components/schemas/Mobile"
+                    - $ref: "#/components/schemas/Laptop"
+                address:
+                  $ref: "#/components/schemas/Address"
+              required:
+                - products
+                - address
+      responses:
+        '200':
+          description: Order placed successfully
   /purchases:
     get:
       tags:
