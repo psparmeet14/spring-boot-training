@@ -268,6 +268,34 @@ paths: #manadatory root element
                     $ref: "#/components/schemas/Address"
         '500':
           $ref: "#/components/responses/InternalServerError"
+  /orders/{orderId}:
+    get:
+      tags:
+        - Orders
+      summary: Get Order Details
+      description: Returns complete Order Details from MyEComApp
+      operationId: getOrderDetailsUsingPathParam
+      deprecated: true
+      parameters:
+        - $ref: "#/components/parameters/orderIdPathParam"
+      responses:
+        '200': 
+          description: Fetched the Order Details successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orderId:
+                    type: integer
+                  products:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+                  address:
+                    $ref: "#/components/schemas/Address"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
   /oneOfOrder:
     post:
       tags:
@@ -375,6 +403,12 @@ components:
       in: query
       required: true
       schema:
+        type: integer
+    orderIdPathParam:
+      name: orderId
+      in: path
+      required: true
+      schema: 
         type: integer
     productIdPathParam:
       name: productId
