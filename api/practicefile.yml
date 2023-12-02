@@ -30,6 +30,9 @@ info: #provides meta-data about your API | mandatory root element
     name: MyApplication License 2.0 #mandatory field
     url: https://www.google.com 
   version: 0.0.1 #mandatory field
+externalDocs:
+  description: External Documentation
+  url: https://www.google.com
 servers: #endpoint url to access consume apis
   - url: https://development.myapplication-server.com/v1 #mandatory field
     description: Development server
