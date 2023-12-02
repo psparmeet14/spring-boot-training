@@ -15,6 +15,13 @@ info: #provides meta-data about your API | mandatory root element
       - Televisions
       - Headphones
   termsOfService: www.google.com
+  x-custom-info:
+    comment: Some comments
+    developers:
+      - name: John Doe
+        email: john@doe.com
+      - name: Jane Doe
+        email: jane@doe.com
   contact: 
     name: API Support
     url: https://www.google.com
