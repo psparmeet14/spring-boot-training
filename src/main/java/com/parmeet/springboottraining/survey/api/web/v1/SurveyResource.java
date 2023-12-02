@@ -12,7 +12,9 @@ import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,14 +31,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -83,7 +78,7 @@ public class SurveyResource {
          *    Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=null],
          *    Granted Authorities=[USER]
          *  ]
-        */
+         */
         System.out.println("Authentication using static call: " + authentication);
         return surveyService.retrieveAllSurveys();
     }
@@ -164,6 +159,20 @@ public class SurveyResource {
         return entityModel;
     }
 
+    @Tag(name = "Survey controller")
+    @Operation(summary = "Get all survey questions")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Found all survey questions",
+                            content = {
+                                    @Content(mediaType = "application/json",
+                                            schema = @Schema(implementation = QuestionDTOV1.class))
+                            }),
+                    @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                            content = @Content),
+                    @ApiResponse(responseCode = "404", description = "Survey not found",
+                            content = @Content)
+            })
     @GetMapping("/{surveyId}/questions")
     public MappingJacksonValue retrieveAllSurveyQuestions(
             @PathVariable int surveyId,
