@@ -200,6 +200,9 @@ paths: #manadatory root element
                 properties:
                   orderId:
                     type: integer
+          links:
+            GetOrderByOrderId:
+              $ref: "#/components/links/GetOrderByOrderId"
         '500':
           $ref: "#/components/responses/InternalServerError"
     put:
@@ -518,5 +521,14 @@ components:
       description: |
         An error occurred while processing the request. Please contact
         support@myecomapp.com
+  links:
+    GetOrderByOrderId:
+      description: >
+        The `orderId` value returned in the response can be used as input
+        parameter in `GET /orders`.
+      operationId: getOrderDetails
+      parameters:
+        orderId: '$response.body#/orderId'
+
 
                 
