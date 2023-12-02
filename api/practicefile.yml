@@ -65,6 +65,14 @@ security:
   - BasicAuth: []
   - BearerAuth: []
   - ApiKeyAuth: []
+  - oAuth2AuthCode:
+    - read
+    - write
+    - admin
+  - OpenId:
+    - read
+    - write
+    - admin
 paths: #manadatory root element
   /categories:
     get:
@@ -73,6 +81,8 @@ paths: #manadatory root element
       summary: List all categories
       description: Returns the list of categories supported by MyEComApp
       operationId: getCategories
+      security:
+        - BasicAuth: []   
       parameters:
         - $ref: "#/components/parameters/categoryIdQueryParam"
       responses:
@@ -110,6 +120,7 @@ paths: #manadatory root element
       summary: List particular category details
       description: Returns the particular category details based on categoryId from MyEComApp
       operationId: getCategoryDetails
+      security: []
       parameters:
         - $ref: "#/components/parameters/categoryIdPathParam"
       responses:
@@ -555,6 +566,20 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    oAuth2AuthCode:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/oauth/authorize
+          tokenUrl: https://example.com/api/oauth.access
+          scopes:
+            read: Read only access
+            write: Read Write access
+            admin: Admin access
+    OpenId: #OIDC is an identity layer built on top of OAuth 2.0 protocol. Also returns ID token along with Access token
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration #discovery endpoint
+      #no need to list available scopes as the clients are supposed to read them from discovery endpoint
 
     
 
