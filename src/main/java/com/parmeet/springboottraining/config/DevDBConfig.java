@@ -3,6 +3,7 @@ package com.parmeet.springboottraining.config;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 @Configuration
 @Profile("dev")
@@ -61,6 +63,25 @@ public class DevDBConfig {
                 conn.getMetaData().getDriverName(),
                 conn.getMetaData().getDriverVersion()
         );
+        cleanMigrate(ds);
         return ds;
+    }
+
+    @SneakyThrows
+    private void cleanMigrate(final DataSource ds) {
+        var dbType = dbType(ds);
+        var flyway = Flyway.configure()
+                .dataSource(ds)
+                .cleanDisabled(false)
+                .locations("classpath:db/migrations/"+dbType, "classpath:testdata/")
+                .load();
+        flyway.clean();
+        flyway.migrate();
+    }
+
+    private String dbType(DataSource ds) throws SQLException {
+        try (var conn = ds.getConnection()) {
+            return conn.getMetaData().getURL().contains("sqlserver") ? "mssql" : "hsql";
+        }
     }
 }
