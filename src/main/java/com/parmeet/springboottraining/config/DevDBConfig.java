@@ -21,7 +21,6 @@ import java.sql.SQLException;
 @Slf4j
 @PropertySource(value = "classpath:db_local.properties", ignoreResourceNotFound = true)
 public class DevDBConfig {
-
     @Bean
     @ConditionalOnProperty(name = "db", havingValue = "hsql", matchIfMissing = true)
     public DataSource hsqlDatasource() {
