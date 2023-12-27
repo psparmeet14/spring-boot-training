@@ -72,6 +72,8 @@ public class DevDBConfig {
         var flyway = Flyway.configure()
                 .dataSource(ds)
                 .cleanDisabled(false)
+                .baselineOnMigrate(true)
+                .sqlMigrationSuffixes(".sql")
                 .locations("classpath:db/migrations/"+dbType, "classpath:testdata/")
                 .load();
         flyway.clean();
