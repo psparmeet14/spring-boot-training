@@ -16,8 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SurveyService {
     private final SurveyRepository surveyRepository;
-    private final QuestionService questionService;
-
+    
     @Transactional
     public int addNewSurvey(SurveyDTOV1 surveyDTOV1) {
         var survey = SurveyMapper.mapFromDTO(surveyDTOV1);
