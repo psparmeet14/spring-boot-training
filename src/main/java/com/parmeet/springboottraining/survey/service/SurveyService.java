@@ -12,11 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This class represents a service for managing surveys in the system.
+ */
 @Service
 @RequiredArgsConstructor
 public class SurveyService {
     private final SurveyRepository surveyRepository;
     
+    /**
+     * Adds a new survey to the system.
+     *
+     * @param surveyDTOV1 the survey data transfer object containing the survey details
+     * @return the ID of the newly added survey
+     */
     @Transactional
     public int addNewSurvey(SurveyDTOV1 surveyDTOV1) {
         var survey = SurveyMapper.mapFromDTO(surveyDTOV1);

@@ -1,12 +1,14 @@
 package com.parmeet.books;
 
-import java.util.List;
-
+import com.parmeet.books.exception.BooksNotFoundException;
+import com.parmeet.books.model.BookRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.parmeet.books.exception.BooksNotFoundException;
+import java.util.List;
 
 @RestController
 public class BooksController {
@@ -28,5 +30,15 @@ public class BooksController {
         var books = booksService.getBooks();
         if (books.isEmpty()) throw new BooksNotFoundException("Books not found");
         return ResponseEntity.ok(books);
+    }
+
+    @PostMapping("/books")
+    public ResponseEntity<String> addBook(@RequestBody BookRequest bookRequest) {
+        System.out.println("Book added");
+         // print book details
+        System.out.println("Book id: " + bookRequest.getId());
+        System.out.println("Book name: " + bookRequest.getName());
+        System.out.println("Book sortIndex: " + bookRequest.getSortIndex());
+        return ResponseEntity.ok("Book added");
     }
 }
