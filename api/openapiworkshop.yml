@@ -1,0 +1,186 @@
+openapi: 3.0.2
+info:
+  title: CatalystOne OpenAPI Workshop
+  version: 0.0.1
+servers:
+  - url: http://localhost:4010
+    description: The local version of this API
+  - url: https://api.server.test/v1
+    description: The live version of this API
+paths:
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
+  /employees:
+    description: The employees of a organization
+    get:
+      description: Retrieve employee of the organization
+      parameters:
+        - name: status
+          in: query
+          required: false
+          description: Which employees to include
+          schema:
+            type: string
+            enum:
+             - ACTIVE
+             - ON_LEAVE
+        - name: X-Tenant-Identifier
+          in: header
+          required: true
+          description: Id of the tenant for this customer
+          schema: 
+            type: string
+            format: UUID
+      responses:
+        '200':
+          description: Employees of the organization
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  employees:
+                    description: The employees of the organization
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/employee"
+    post:
+      description: Onboard a new employee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - employeeNumber
+                - dateOfBirth
+              $ref: "#/components/schemas/employeeWithDetails"
+      responses:
+        '201':
+          description: Employee was successfully onboarded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  employee:
+                    description: The employee that was onboarded
+                    type: object
+                    $ref: "#/components/schemas/employee"
+        '400':
+          description: The employee could not be onboarded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: The error code
+                    example: "1001"
+                  description:
+                    type: string
+                    description: A human readable description of the error
+                    example: "Employee not born yet"
+  /employees/{employeeNumber}:
+    get:
+      description: Retrieve employee information
+      parameters:
+        - name: employeeNumber
+          in: path
+          required: true
+          example: "UX-123"
+          description: Employee number to get employee for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee information 
+          content:
+            application/json:
+               schema:
+                type: object
+                properties:
+                  employee:
+                    description: The employee that was onboarded
+                    $ref: "#/components/schemas/employee"
+  /employees/{employeeNumber}/files:
+    post:
+      description: Upload files alongside the employee details
+      parameters:
+        - name: employeeNumber
+          in: path
+          required: true
+          example: "UX-123"
+          description: Employee number to get employee for
+          schema: 
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of the file
+                  example: "Psych Evaluation"
+                date:
+                  type: string
+                  description: Date of the file
+                  format: date
+                fileName:
+                  type: string
+                  description: The file binary
+                  format: binary
+      responses:
+        '201':
+          description: File was successfully uploaded\
+components:
+  schemas:
+    employee:
+      type: object
+      properties:
+        employeeNumber:
+          type: string
+          description: The internal employee number of this employee
+          example: "UX-123"
+        name:  
+          type: string
+          description: Full name of the employee
+          example: "Bruce Willis"
+        dateOfBirth:
+          type: string
+          format: date
+          description: The date of birth of the employee
+          example: "1955-03-19"
+    employeeWithDetails:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/employee"
+        - type: object
+          properties:
+            departments:
+                type: array 
+                items:
+                  type: string
+            contactDetails:
+                type: object
+                properties:
+                  email: 
+                    type: string
+                    format: email
+                  phone:
+                    type: string
+                    example: "9876543210"
+            skills:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+            proficiency:
+                  type: string

@@ -40,6 +40,12 @@ public class DevDBConfig {
         return buildAndMigrateDatasource(dsProperties.getUrl(), dsProperties.getUsername(), dsProperties.getPassword());
     }
 
+    @Bean
+    @ConditionalOnProperty(name = "db", havingValue = "mssql")
+    public DataSource mssqlDatasource() {
+        return buildAndMigrateDatasource("jdbc:sqlserver://localhost:1434;encrypt=false", "sa", "Admin123");
+    }
+
     @SneakyThrows
     private DataSource buildAndMigrateDatasource(String url, String username, String password) {
         var ds = (HikariDataSource) DataSourceBuilder.create().url(url).username(username).password(password).build();
