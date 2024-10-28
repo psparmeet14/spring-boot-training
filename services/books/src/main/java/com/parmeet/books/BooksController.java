@@ -3,13 +3,11 @@ package com.parmeet.books;
 import com.parmeet.books.exception.BooksNotFoundException;
 import com.parmeet.books.model.BookRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/api/v1")
 @RestController
 public class BooksController {
 
